@@ -1,32 +1,29 @@
+import { Link } from "@tanstack/react-router";
 import { Activity, Download, Heart, LogOut, MapPin, ShoppingCart, TriangleAlert, UserRound } from "lucide-react";
 
-const items = [
-  { label: "Dados do perfil", icon: UserRound, current: true },
-  { label: "Carteiras", icon: MapPin },
-  { label: "Atividade", icon: ShoppingCart },
-  { label: "Lista de interesse", icon: Heart },
-  { label: "Ofertas", icon: Activity },
-  { label: "Arquivos baixados", icon: Download },
-  { label: "Suporte", icon: TriangleAlert },
-];
+export type AccountSection = "profile" | "wallets" | "activity" | "wishlist" | "offers" | "downloads" | "support";
 
-export function AccountSidebar({ onLogout }: { onLogout: () => void }) {
+export const accountItems = [
+  { label: "Dados do perfil", icon: UserRound, section: "profile", to: "/perfil" },
+  { label: "Carteiras", icon: MapPin, section: "wallets", to: "/perfil/carteiras" },
+  { label: "Atividade", icon: ShoppingCart, section: "activity", to: "/perfil/atividade" },
+  { label: "Lista de interesse", icon: Heart, section: "wishlist", to: "/perfil/lista-de-interesse" },
+  { label: "Ofertas", icon: Activity, section: "offers", to: "/perfil/ofertas" },
+  { label: "Arquivos baixados", icon: Download, section: "downloads", to: "/perfil/arquivos-baixados" },
+  { label: "Suporte", icon: TriangleAlert, section: "support", to: "/perfil/suporte" },
+] as const;
+
+export function AccountSidebar({ current, onLogout }: { current: AccountSection; onLogout: () => void }) {
   return (
     <aside className="account-sidebar" aria-label="Meu perfil">
       <h2>Meu perfil</h2>
       <ul>
-        {items.map(({ label, icon: Icon, current }) => (
-          <li key={label}>
-            {/* As demais seções ainda não existem: ficam visíveis, porém indisponíveis. */}
-            <button
-              type="button"
-              disabled={!current}
-              aria-current={current ? "page" : undefined}
-              title={current ? undefined : "Disponível em breve"}
-            >
+        {accountItems.map(({ label, icon: Icon, section, to }) => (
+          <li key={section}>
+            <Link to={to} activeOptions={{ exact: true }} aria-current={section === current ? "page" : undefined}>
               <Icon aria-hidden="true" />
               {label}
-            </button>
+            </Link>
           </li>
         ))}
       </ul>

@@ -4,6 +4,9 @@ import CartPage from "@/features/marketplace/pages/cart/CartPage";
 import NftDetailPage from "@/features/marketplace/pages/nft-detail/NftDetailPage";
 import PaymentPage from "@/features/marketplace/pages/payment/PaymentPage";
 import ProfilePage from "@/features/marketplace/pages/profile/ProfilePage";
+import { MaintenancePage } from "@/features/marketplace/pages/profile/MaintenancePage";
+import type { AccountSection } from "@/features/marketplace/pages/profile/components/AccountSidebar";
+import WalletsPage from "@/features/marketplace/pages/wallets/WalletsPage";
 import { defaultFilters, homeTabs, sortOptions, type HomeSearch } from "@/features/marketplace/types/search";
 
 const rootRoute = createRootRoute({ component: Outlet });
@@ -58,8 +61,34 @@ const profileRoute = createRoute({
   component: ProfilePage,
 });
 
+const walletsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/perfil/carteiras",
+  component: WalletsPage,
+});
+
+const maintenanceRoutes = (
+  [
+    ["/perfil/atividade", "activity"],
+    ["/perfil/lista-de-interesse", "wishlist"],
+    ["/perfil/ofertas", "offers"],
+    ["/perfil/arquivos-baixados", "downloads"],
+    ["/perfil/suporte", "support"],
+  ] as const satisfies readonly (readonly [string, AccountSection])[]
+).map(([path, section]) =>
+  createRoute({ getParentRoute: () => rootRoute, path, component: () => <MaintenancePage section={section} /> }),
+);
+
 export const router = createRouter({
-  routeTree: rootRoute.addChildren([homeRoute, nftDetailRoute, cartRoute, paymentRoute, profileRoute]),
+  routeTree: rootRoute.addChildren([
+    homeRoute,
+    nftDetailRoute,
+    cartRoute,
+    paymentRoute,
+    profileRoute,
+    walletsRoute,
+    ...maintenanceRoutes,
+  ]),
   defaultNotFoundComponent: () => <main className="not-found">Esta página não existe.</main>,
 });
 
