@@ -45,6 +45,16 @@ export type NftDetail = Nft & {
   reviews: NftReview[];
 };
 
+export type CouponStatus = "applied" | "invalid" | "expired";
+
+export type CartQuote = {
+  subtotal: string;
+  discount: string;
+  networkFee: string;
+  total: string;
+  coupon?: { code: string; status: CouponStatus; percent: number };
+};
+
 export type NftResults = {
   items: Nft[];
   total: number;

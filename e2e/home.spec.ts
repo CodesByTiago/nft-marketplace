@@ -49,15 +49,16 @@ test("combina filtros e adiciona um NFT ao carrinho", async ({ page }) => {
   const toast = page.locator(".cart-toast");
   await expect(toast).toContainText("Cosmic Bloom #118 adicionado ao carrinho");
   await toast.getByRole("button", { name: "Ver carrinho" }).click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(toast).toHaveCount(0);
-  await page.getByRole("dialog").getByRole("button", { name: "Fechar carrinho" }).click();
-  await page.getByRole("button", { name: /Abrir carrinho/ }).click();
+  await expect(page).toHaveURL(/\/carrinho$/);
+  await expect(page.locator(".cart-row")).toHaveCount(1);
+  await page.goBack();
 
-  const cart = page.getByRole("dialog");
-  await expect(cart.getByRole("heading", { name: /Carrinho \(1\)/ })).toBeVisible();
-  await expect(cart.getByText("Cosmic Bloom #118")).toBeVisible();
-  await cart.getByRole("button", { name: "Fechar carrinho" }).click();
+  await page.locator(".cart-preview-wrap").hover();
+  const preview = page.getByRole("region", { name: "Prévia do carrinho" });
+  await expect(preview.getByText("Cosmic Bloom #118")).toBeVisible();
+  await preview.getByRole("link", { name: "Ver carrinho completo" }).click();
+  await expect(page).toHaveURL(/\/carrinho$/);
+  await page.goBack();
   await page.getByRole("button", { name: "Fotografia (5)" }).click();
   await expect(page).not.toHaveURL(/category=/);
   await expect(page.locator(".nft-card")).toHaveCount(9);
@@ -88,7 +89,7 @@ test("as abas recortam o catálogo e atualizam as contagens", async ({ page }) =
 test("o header permanece fixo ao rolar a página", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
-  await expect(page.getByRole("button", { name: /Abrir carrinho/ })).toBeInViewport();
+  await expect(page.getByRole("link", { name: /Abrir carrinho/ })).toBeInViewport();
 });
 
 test("o menu ativo do header acompanha a seção visível", async ({ page }) => {

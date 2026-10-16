@@ -3,6 +3,8 @@ import { Search, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { useActiveSection } from "../hooks/useActiveSection";
+import type { CartEntry } from "../types/nft";
+import { CartPreview } from "./CartPreview";
 
 const navItems = [
   { id: "inicio", label: "Início" },
@@ -13,25 +15,16 @@ const navItems = [
 const navIds = navItems.map((item) => item.id);
 
 type SiteHeaderProps = {
-  cartCount: number;
+  cart: CartEntry[];
   search: string;
   /** Item de menu fixo; sem ele, o ativo acompanha a seção visível da home. */
   activeId?: string;
-  onCart: () => void;
   onSearch: (value: string) => void;
   onSearchSubmit?: () => void;
   onFilters?: () => void;
 };
 
-export function SiteHeader({
-  cartCount,
-  search,
-  activeId,
-  onCart,
-  onSearch,
-  onSearchSubmit,
-  onFilters,
-}: SiteHeaderProps) {
+export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, onFilters }: SiteHeaderProps) {
   const scrollSection = useActiveSection(navIds);
   const activeSection = activeId ?? scrollSection;
   const offHome = activeId !== undefined;
@@ -80,21 +73,7 @@ export function SiteHeader({
               aria-label="Buscar NFTs"
             />
           </label>
-          <Button
-            variant="ghost"
-            size="icon-lg"
-            className="desktop-cart"
-            onClick={onCart}
-            aria-label={`Abrir carrinho, ${cartCount} itens`}
-          >
-            <img src="/images/icon-cart.svg" alt="" />
-            {cartCount > 0 && (
-              <span className="cart-count" key={cartCount}>
-                <img src="/images/icon-badge.svg" alt="" />
-                <span>{cartCount}</span>
-              </span>
-            )}
-          </Button>
+          <CartPreview items={cart} />
           <Button
             className="login-button"
             onClick={() => window.alert("A conexão de carteira estará disponível no checkout.")}

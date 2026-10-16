@@ -1,7 +1,7 @@
 import { ShoppingBag } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import type { NftDetail } from "@/features/marketplace/types/nft";
-import { QuantityStepper } from "./QuantityStepper";
+import { QuantityStepper } from "@/features/marketplace/components/QuantityStepper";
 
 type BuyBarProps = {
   nft: NftDetail;

@@ -7,7 +7,6 @@ import { getNfts } from "@/features/marketplace/services/nftService";
 import { defaultFilters, type HomeFilters } from "@/features/marketplace/types/search";
 import { useCartPanel } from "@/features/marketplace/hooks/useCartPanel";
 import { useFavorites } from "@/features/marketplace/hooks/useFavorites";
-import { CartDrawer } from "@/features/marketplace/components/CartDrawer";
 import { CartToast } from "@/features/marketplace/components/CartToast";
 import { SiteFooter } from "@/features/marketplace/components/SiteFooter";
 import { SiteHeader } from "@/features/marketplace/components/SiteHeader";
@@ -49,8 +48,7 @@ export default function HomePage() {
   const { tab, category, collection, network, minPrice, maxPrice, sort, page } = filters;
   const locationState = useLocation({ select: (location) => location.state as { q?: string } });
   const [searchTerm, setSearchTerm] = useState(locationState.q ?? "");
-  const { cart, cartCount, updateQuantity, addToCart, cartOpen, openCart, closeCart, toast, dismissToast } =
-    useCartPanel();
+  const { cart, cartCount, addToCart, toast, dismissToast } = useCartPanel();
   const { favorites, toggleFavorite } = useFavorites();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
@@ -120,8 +118,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen overflow-x-clip bg-background text-foreground">
       <SiteHeader
-        cartCount={cartCount}
-        onCart={openCart}
+        cart={cart}
         search={searchTerm}
         onSearch={(value) => setSearchTerm(value)}
         onFilters={() => setFiltersOpen((open) => !open)}
@@ -235,7 +232,12 @@ export default function HomePage() {
         >
           <ScanLine aria-hidden="true" />
         </Button>
-        <Button variant="ghost" size="icon-lg" aria-label={`Abrir carrinho, ${cartCount} itens`} onClick={openCart}>
+        <Button
+          variant="ghost"
+          size="icon-lg"
+          aria-label={`Abrir carrinho, ${cartCount} itens`}
+          onClick={() => void navigate({ to: "/carrinho" })}
+        >
           <ShoppingBag aria-hidden="true" />
         </Button>
         <Button
@@ -247,8 +249,7 @@ export default function HomePage() {
           <UserRound aria-hidden="true" />
         </Button>
       </nav>
-      {toast && <CartToast nft={toast} onView={openCart} onClose={dismissToast} />}
-      {cartOpen && <CartDrawer items={cart} onClose={closeCart} onQuantity={updateQuantity} />}
+      {toast && <CartToast nft={toast} onView={() => void navigate({ to: "/carrinho" })} onClose={dismissToast} />}
     </div>
   );
 }

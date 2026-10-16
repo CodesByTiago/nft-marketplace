@@ -4,7 +4,9 @@ export function toWei(eth: string) {
   return BigInt(whole) * 10n ** 18n + BigInt(decimals || "0");
 }
 
-export function formatEth(wei: bigint) {
-  const cents = (wei + 5n * 10n ** 15n) / 10n ** 16n;
-  return `${cents / 100n}.${(cents % 100n).toString().padStart(2, "0")}`;
+export function formatEth(wei: bigint, digits = 2) {
+  const unit = 10n ** BigInt(18 - digits);
+  const scaled = (wei + unit / 2n) / unit;
+  const scale = 10n ** BigInt(digits);
+  return `${scaled / scale}.${(scaled % scale).toString().padStart(digits, "0")}`;
 }

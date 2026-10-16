@@ -3,6 +3,7 @@ import type { Nft } from "../types/nft";
 import type { HomeTab, SortOption } from "../types/search";
 import { nfts } from "./data";
 import { buildNftDetail } from "./detail";
+import { buildCartQuote } from "./cartQuote";
 
 function countBy(list: Nft[], key: "category" | "network") {
   return list.reduce<Record<string, number>>((counts, nft) => {
@@ -12,6 +13,11 @@ function countBy(list: Nft[], key: "category" | "network") {
 }
 
 export const handlers = [
+  http.post("/api/cart/quote", async ({ request }) => {
+    const body = (await request.json()) as { items?: { id: string; quantity: number }[]; coupon?: string };
+    await delay(400);
+    return HttpResponse.json(buildCartQuote(body.items ?? [], body.coupon));
+  }),
   http.get("/api/nfts/:id", async ({ params }) => {
     const nft = nfts.find((item) => item.id === params.id);
     await delay(350);

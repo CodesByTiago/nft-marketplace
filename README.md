@@ -34,7 +34,7 @@ Os testes iniciam o servidor Vite com MSW e validam o destaque, filtros, carrinh
 ## Estrutura
 
 - `src/app/` — composição da aplicação e rotas
-- `src/features/marketplace/` — `pages/home` e `pages/nft-detail` (páginas e componentes exclusivos), `components` (header, footer, carrinho e aviso compartilhados), `hooks` (carrinho, favoritos, menu ativo), `services`, `types`, `utils`, `mocks` (MSW em desenvolvimento) e `tests`
+- `src/features/marketplace/` — `pages/home`, `pages/nft-detail` e `pages/cart` (páginas e componentes exclusivos), `components` (header, footer, carrinho e aviso compartilhados), `hooks` (carrinho, favoritos, menu ativo), `services`, `types`, `utils`, `mocks` (MSW em desenvolvimento) e `tests`
 - `src/shared/ui/` — componentes shadcn/ui
 - `src/shared/utils/` — utilitários compartilhados
 - `src/core/api/` — cliente Axios; `src/core/msw/` e `src/core/utils/setup.ts` — servidor MSW e setup global do Vitest
@@ -48,4 +48,4 @@ Tailwind CSS v4 fornece as utilities e os tokens usados pela aplicação; os com
 
 As quatro ilustrações locais em `public/images/` foram obtidas pelo MCP oficial do Figma e não dependem de URLs temporárias. Referência de implementação: [Figma — Início desktop e mobile](https://www.figma.com/design/sPPq6w7GAVqYMT5gT3bWiV/Frontend-Challenge--Copy-?node-id=2-2&m=dev).
 
-Esta etapa implementa a home e o detalhe do NFT, com interações locais de catálogo/carrinho. Como o checkout ainda não existe, **Comprar** adiciona a quantidade escolhida ao carrinho e o abre. Sessão, perfil/carteiras, checkout/pagamento, integração Socket.IO, cobertura E2E dessas telas, auditoria Lighthouse e deploy ainda precisam ser concluídos para atender integralmente ao [PLAN.md](./PLAN.md).
+Esta etapa implementa a home, o detalhe do NFT e o **carrinho** (`/carrinho`, desktop e mobile): edição de quantidades, remoção, cupom (aplicar/remover; `KURIO10` e `BEMVINDO5` válidos, `VERAO20` expirado, demais inválidos), resumo calculado por `POST /api/cart/quote` (taxa de rede fixa de 0.016 ETH) com skeleton, persistência após recarregar e estado vazio. **Comprar** adiciona a quantidade escolhida e leva ao carrinho; **Conectar e finalizar** é provisório (mostra um aviso) até as telas de conta, checkout e pagamento. Sessão, perfil/carteiras, checkout/pagamento, integração Socket.IO, cobertura E2E dessas telas, auditoria Lighthouse e deploy ainda precisam ser concluídos para atender integralmente ao [PLAN.md](./PLAN.md).

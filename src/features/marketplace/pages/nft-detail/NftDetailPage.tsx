@@ -7,16 +7,15 @@ import { getNft } from "@/features/marketplace/services/nftService";
 import type { Nft, NftDetail } from "@/features/marketplace/types/nft";
 import { useCartPanel } from "@/features/marketplace/hooks/useCartPanel";
 import { useFavorites } from "@/features/marketplace/hooks/useFavorites";
-import { CartDrawer } from "@/features/marketplace/components/CartDrawer";
 import { CartToast } from "@/features/marketplace/components/CartToast";
 import { SiteFooter } from "@/features/marketplace/components/SiteFooter";
 import { SiteHeader } from "@/features/marketplace/components/SiteHeader";
+import { RelatedNfts } from "@/features/marketplace/components/RelatedNfts";
 import { BuyBar } from "./components/BuyBar";
 import { NftDescription } from "./components/NftDescription";
 import { NftDetailSkeleton } from "./components/NftDetailSkeleton";
 import { NftGallery } from "./components/NftGallery";
 import { NftSummary } from "./components/NftSummary";
-import { RelatedNfts } from "./components/RelatedNfts";
 
 const DEFAULT_EDITION = "1/50";
 
@@ -49,8 +48,7 @@ export default function NftDetailPage() {
   const [search, setSearch] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [edition, setEdition] = useState(DEFAULT_EDITION);
-  const { cart, cartCount, updateQuantity, addToCart, cartOpen, openCart, closeCart, toast, dismissToast } =
-    useCartPanel();
+  const { cart, addToCart, toast, dismissToast } = useCartPanel();
   const { favorites, toggleFavorite } = useFavorites();
 
   const {
@@ -91,14 +89,13 @@ export default function NftDetailPage() {
   function buy() {
     if (!nft) return;
     addToCart(toCartNft(nft), quantity);
-    openCart();
+    void navigate({ to: "/carrinho" });
   }
 
   return (
     <div className="min-h-screen overflow-x-clip bg-background text-foreground detail-page">
       <SiteHeader
-        cartCount={cartCount}
-        onCart={openCart}
+        cart={cart}
         search={search}
         onSearch={setSearch}
         activeId="catalogo"
@@ -153,7 +150,7 @@ export default function NftDetailPage() {
               />
             </div>
             <NftDescription nft={nft} />
-            <RelatedNfts collection={nft.collection} currentId={nft.id} />
+            <RelatedNfts title="Mais desta coleção" collection={nft.collection} excludeIds={[nft.id]} />
             <BuyBar
               nft={nft}
               quantity={quantity}
@@ -166,8 +163,7 @@ export default function NftDetailPage() {
       </main>
 
       <SiteFooter />
-      {toast && <CartToast nft={toast} onView={openCart} onClose={dismissToast} />}
-      {cartOpen && <CartDrawer items={cart} onClose={closeCart} onQuantity={updateQuantity} />}
+      {toast && <CartToast nft={toast} onView={() => void navigate({ to: "/carrinho" })} onClose={dismissToast} />}
     </div>
   );
 }

@@ -6,13 +6,20 @@ import { getNfts } from "@/features/marketplace/services/nftService";
 const PAGE_SIZE = 5;
 const MAX_ITEMS = 15;
 
-export function RelatedNfts({ collection, currentId }: { collection: string; currentId: string }) {
+type RelatedNftsProps = {
+  title: string;
+  /** Sem coleção, lista as obras em alta. */
+  collection?: string;
+  excludeIds: string[];
+};
+
+export function RelatedNfts({ title, collection, excludeIds }: RelatedNftsProps) {
   const [page, setPage] = useState(0);
   const { data } = useQuery({
-    queryKey: ["nfts", "related", collection],
-    queryFn: () => getNfts({ collection, limit: MAX_ITEMS + 1 }),
+    queryKey: ["nfts", "related", collection ?? "trending"],
+    queryFn: () => getNfts(collection ? { collection, limit: 40 } : { tab: "trending", limit: 40 }),
   });
-  const items = (data?.items ?? []).filter((nft) => nft.id !== currentId).slice(0, MAX_ITEMS);
+  const items = (data?.items ?? []).filter((nft) => !excludeIds.includes(nft.id)).slice(0, MAX_ITEMS);
   if (items.length === 0) return null;
 
   const pageCount = Math.ceil(items.length / PAGE_SIZE);
@@ -20,7 +27,7 @@ export function RelatedNfts({ collection, currentId }: { collection: string; cur
 
   return (
     <section className="related-section" aria-labelledby="related-title">
-      <h2 id="related-title">Mais desta coleção</h2>
+      <h2 id="related-title">{title}</h2>
       <ul className="related-grid">
         {visible.map((nft) => (
           <li key={nft.id}>
@@ -35,7 +42,7 @@ export function RelatedNfts({ collection, currentId }: { collection: string; cur
         ))}
       </ul>
       {pageCount > 1 && (
-        <div className="related-dots" role="group" aria-label="Páginas de obras da coleção">
+        <div className="related-dots" role="group" aria-label={`Páginas de ${title.toLowerCase()}`}>
           {Array.from({ length: pageCount }, (_, index) => (
             <button
               type="button"

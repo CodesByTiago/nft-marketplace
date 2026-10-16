@@ -40,9 +40,9 @@ test("abre o detalhe pelo card, escolhe quantidade e compra", async ({ page }) =
   await expect(stepper.locator("output")).toHaveText("2");
 
   await page.getByRole("button", { name: "COMPRAR" }).click();
-  const cart = page.getByRole("dialog");
-  await expect(cart.getByRole("heading", { name: /Carrinho \(1\)/ })).toBeVisible();
-  await expect(cart.getByText(name)).toBeVisible();
+  await expect(page).toHaveURL(/\/carrinho$/);
+  await expect(page.getByRole("link", { name, exact: true })).toBeVisible();
+  await expect(page.locator(".cart-row .quantity-stepper output")).toHaveText("2");
 });
 
 test("limita a quantidade ao total de edições", async ({ page }) => {

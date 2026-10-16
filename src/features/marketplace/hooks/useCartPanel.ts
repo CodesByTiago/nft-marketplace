@@ -4,10 +4,9 @@ import { useCart } from "./useCart";
 
 const TOAST_DURATION = 3500;
 
-// Carrinho com o estado de interface compartilhado pelas páginas: gaveta aberta e aviso de item adicionado.
+// Carrinho com o estado de interface compartilhado pelas páginas: aviso de item adicionado.
 export function useCartPanel() {
-  const { cart, cartCount, addToCart: addItem, updateQuantity } = useCart();
-  const [cartOpen, setCartOpen] = useState(false);
+  const { cart, cartCount, addToCart: addItem, updateQuantity, removeFromCart } = useCart();
   const [toast, setToast] = useState<Nft | null>(null);
   const toastTimer = useRef<number>(undefined);
 
@@ -18,19 +17,12 @@ export function useCartPanel() {
     toastTimer.current = window.setTimeout(() => setToast(null), TOAST_DURATION);
   }
 
-  function openCart() {
-    setToast(null);
-    setCartOpen(true);
-  }
-
   return {
     cart,
     cartCount,
     updateQuantity,
+    removeFromCart,
     addToCart,
-    cartOpen,
-    openCart,
-    closeCart: () => setCartOpen(false),
     toast,
     dismissToast: () => setToast(null),
   };

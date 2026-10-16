@@ -31,5 +31,9 @@ export function useCart() {
     );
   }
 
-  return { cart, cartCount, addToCart, updateQuantity };
+  function removeFromCart(id: string) {
+    setCart((current) => current.filter((item) => item.nft.id !== id));
+  }
+
+  return { cart, cartCount, addToCart, updateQuantity, removeFromCart };
 }
