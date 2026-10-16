@@ -52,7 +52,7 @@
 .nft-badge { position: absolute; bottom: 0; left: 0; padding: 8px 12px; background: var(--primary-kurio); color: var(--bg); font-size: 10px; font-weight: 700; }
 .nft-card-content { padding-top: 12px; }
 .nft-card-content > span { display: none; color: var(--muted); font-size: 9px; }
-.nft-card-content h3 { margin: 0; font-size: 16px; font-weight: 400; line-height: 16px; }
+.nft-card-content h2 { margin: 0; font-size: 16px; font-weight: 400; line-height: 16px; }
 .nft-card-footer { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
 .nft-card-footer strong { color: var(--primary-light); font-size: 18px; font-weight: 700; line-height: 16px; }
 .nft-card-footer small { font-size: 11px; }
@@ -65,6 +65,7 @@
 @keyframes shimmer { to { background-position-x: -200%; } }
 .catalog-message { display: grid; min-height: 280px; place-content: center; justify-items: center; gap: 12px; color: var(--muted); text-align: center; }
 .catalog-message h3, .catalog-message p { margin: 0; }
+.catalog-notice { margin: 0 0 12px; color: #ff8a8a; font-size: 14px; }
 .catalog-message h3 { color: var(--foreground); font-size: 16px; }
 .catalog-message p { font-size: 12px; }
 .catalog-message > svg { color: var(--primary-light); }

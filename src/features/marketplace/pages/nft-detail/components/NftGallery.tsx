@@ -50,7 +50,7 @@ export function NftGallery({ name, image, favorite, onFavorite, onBack }: NftGal
       <div className="detail-main-image">
         <img src={image} alt={name} />
         <button type="button" className="detail-zoom" aria-label="Ampliar imagem" onClick={() => setZoomed(true)}>
-          <img src="/images/detail-zoom.svg" alt="" />
+          <img src="/images/detail-zoom.svg" alt="" width="30" height="30" />
         </button>
       </div>
       <Dialog open={zoomed} onOpenChange={setZoomed}>

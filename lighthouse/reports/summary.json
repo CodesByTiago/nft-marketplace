@@ -1,0 +1,59 @@
+{
+  "metas": {
+    "performance": 90,
+    "accessibility": 95,
+    "best-practices": 95,
+    "seo": 90
+  },
+  "runs": 3,
+  "summary": [
+    {
+      "pagina": "inicio",
+      "perfil": "mobile",
+      "lcpMs": 7019,
+      "cls": 0,
+      "tbtMs": 782,
+      "performance": 48,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "lighthouse": "13.5.0"
+    },
+    {
+      "pagina": "inicio",
+      "perfil": "desktop",
+      "lcpMs": 2880,
+      "cls": 0,
+      "tbtMs": 78,
+      "performance": 75,
+      "accessibility": 96,
+      "best-practices": 100,
+      "seo": 100,
+      "lighthouse": "13.5.0"
+    },
+    {
+      "pagina": "detalhe",
+      "perfil": "mobile",
+      "lcpMs": 5668,
+      "cls": 0,
+      "tbtMs": 213,
+      "performance": 67,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "lighthouse": "13.5.0"
+    },
+    {
+      "pagina": "detalhe",
+      "perfil": "desktop",
+      "lcpMs": 2703,
+      "cls": 0.085,
+      "tbtMs": 59,
+      "performance": 77,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "lighthouse": "13.5.0"
+    }
+  ]
+}

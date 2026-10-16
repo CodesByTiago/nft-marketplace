@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import type { SessionUser } from "@/core/auth/AuthContext";
+import type { Session } from "@/core/auth/session";
 import { register } from "../services/authService";
 import { validateRegister, type FieldErrors, type RegisterInput } from "../types";
 import { PasswordField, TextField } from "./Fields";
@@ -7,7 +7,7 @@ import { SocialButtons } from "./SocialButtons";
 
 const empty: RegisterInput = { username: "", email: "", password: "", confirmPassword: "" };
 
-export function RegisterForm({ onSuccess }: { onSuccess: (user: SessionUser) => void }) {
+export function RegisterForm({ onSuccess }: { onSuccess: (session: Session) => void }) {
   const [values, setValues] = useState<RegisterInput>(empty);
   const [errors, setErrors] = useState<FieldErrors<RegisterInput>>({});
   const [failure, setFailure] = useState("");

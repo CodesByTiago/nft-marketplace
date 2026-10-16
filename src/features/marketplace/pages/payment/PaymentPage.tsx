@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link, useCanGoBack, useNavigate, useRouter, useSearch } from "@tanstack/react-router";
+import { useAuth } from "@/core/auth/AuthContext";
 import { Button } from "@/shared/ui/button";
 import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
 import { SiteFooter } from "@/features/marketplace/components/SiteFooter";
@@ -17,7 +18,7 @@ import { ReceiptDialog } from "./components/ReceiptDialog";
 import { useCheckout } from "./hooks/useCheckout";
 import { emptyProfile, validateProfile, type Profile, type ProfileErrors } from "./profile";
 
-export default function PaymentPage() {
+function PaymentContent() {
   const navigate = useNavigate();
   const router = useRouter();
   const canGoBack = useCanGoBack();
@@ -68,7 +69,7 @@ export default function PaymentPage() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!quote || submitting || isFetching) return;
+    if (!quote || submitting || isFetching || quote.unavailable?.length) return;
 
     const account = accounts.find((candidate) => candidate.id === accountId) ?? accounts[0];
     let target = { network: account.network, address: account.address };
@@ -85,14 +86,20 @@ export default function PaymentPage() {
     submit({ items: lines, coupon, expectedTotal: quote.total, provider, ...target });
   }
 
+  const blocked = !quote || submitting || isFetching || Boolean(quote.unavailable?.length);
   const confirm = (
     <div className="pay-confirm">
+      {quote?.unavailable?.length ? (
+        <p className="pay-alert" role="alert">
+          Há itens esgotados no carrinho. Remova-os para continuar.
+        </p>
+      ) : null}
       {error && (
         <p className="pay-alert" role="alert">
           {error}
         </p>
       )}
-      <button type="submit" className="pay-submit" disabled={!quote || submitting || isFetching}>
+      <button type="submit" className="pay-submit" disabled={blocked}>
         {submitting ? "Processando compra…" : "Confirmar compra"}
       </button>
     </div>
@@ -171,5 +178,18 @@ export default function PaymentPage() {
       <SiteFooter />
       <ReceiptDialog order={order} onClose={closeConfirmation} />
     </div>
+  );
+}
+
+// O pagamento é privado: sem sessão não há conteúdo do pedido nem chamada ao servidor.
+export default function PaymentPage() {
+  const { user, openAuth } = useAuth();
+  if (user) return <PaymentContent />;
+  return (
+    <main className="not-found">
+      <h1>Entre para finalizar a compra</h1>
+      <p>Seu carrinho foi mantido. Acesse sua conta para continuar.</p>
+      <Button onClick={() => openAuth("login")}>Entrar</Button>
+    </main>
   );
 }

@@ -53,7 +53,7 @@ export function NftSummary({
           <span>({nft.reviewCount})</span>
         </p>
         <div className="detail-price-row">
-          <strong>{nft.price} ETH</strong>
+          <strong>{nft.available === false ? "Esgotado" : `${nft.price} ETH`}</strong>
           <p>
             <Stars rating={nft.rating} />
             {nft.reviewCount} avaliações de colecionadores
@@ -89,7 +89,7 @@ export function NftSummary({
       <div className="detail-buy">
         <QuantityStepper value={quantity} max={nft.totalEditions} onChange={onQuantity} />
         <div>
-          <Button className="buy-button" onClick={onBuy}>
+          <Button className="buy-button" onClick={onBuy} disabled={nft.available === false}>
             COMPRAR
           </Button>
           <Button variant="outline" className="favorite-action" aria-pressed={favorite} onClick={onFavorite}>

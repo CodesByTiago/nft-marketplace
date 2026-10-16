@@ -26,8 +26,9 @@ describe("authService", () => {
   beforeEach(() => server.use(...authHandlers));
 
   it("entra com o usuário de demonstração", async () => {
-    const user = await login({ email: "contato@email.com", password: "kurio1234" });
+    const { user, token } = await login({ email: "contato@email.com", password: "kurio1234" });
     expect(user.username).toBe("colecionador");
+    expect(token).toBeTruthy();
   });
 
   it("recusa credenciais incorretas", async () => {
@@ -38,9 +39,9 @@ describe("authService", () => {
 
   it("cria a conta, permite entrar e bloqueia e-mail repetido", async () => {
     const input = { username: "tiago", email: "Novo@Kurio.io", password: "12345678", confirmPassword: "12345678" };
-    const created = await register(input);
+    const { user: created } = await register(input);
     expect(created.email).toBe("novo@kurio.io");
-    expect((await login({ email: "novo@kurio.io", password: "12345678" })).id).toBe(created.id);
+    expect((await login({ email: "novo@kurio.io", password: "12345678" })).user.id).toBe(created.id);
     await expect(register(input)).rejects.toBeInstanceOf(AuthError);
   });
 });

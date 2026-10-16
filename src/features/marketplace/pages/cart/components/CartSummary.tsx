@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/core/auth/AuthContext";
 import { getCartQuote } from "@/features/marketplace/services/nftService";
 import type { CartEntry, CouponStatus } from "@/features/marketplace/types/nft";
 import { formatEth, toWei } from "@/features/marketplace/utils/eth";
@@ -14,6 +15,7 @@ export function CartSummary({ items }: { items: CartEntry[] }) {
   const [code, setCode] = useState("");
   const [applied, setApplied] = useState("");
   const navigate = useNavigate();
+  const { user, openAuth } = useAuth();
   const lines = items.map(({ nft, quantity }) => ({ id: nft.id, quantity }));
 
   const {
@@ -111,10 +113,13 @@ export function CartSummary({ items }: { items: CartEntry[] }) {
       <button
         type="button"
         className="cart-checkout"
-        disabled={!quote}
-        onClick={() =>
-          void navigate({ to: "/pagamento", search: { coupon: couponApplied ? coupon?.code : undefined } })
-        }
+        disabled={!quote || Boolean(quote.unavailable?.length)}
+        onClick={() => {
+          const checkout = () =>
+            void navigate({ to: "/pagamento", search: { coupon: couponApplied ? coupon?.code : undefined } });
+          if (user) checkout();
+          else openAuth("login", checkout);
+        }}
       >
         Conectar e finalizar
       </button>

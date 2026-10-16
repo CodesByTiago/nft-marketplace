@@ -9,7 +9,7 @@ export type RegisterInput = {
   confirmPassword: string;
 };
 
-export type AuthResponse = { user: SessionUser };
+export type AuthResponse = { user: SessionUser; token: string; expiresAt: number };
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

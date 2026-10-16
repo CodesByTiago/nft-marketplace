@@ -1,11 +1,15 @@
 import { delay, http, HttpResponse } from "msw";
+import { authenticate } from "@/core/msw/db";
+import { applyAfterRules } from "@/core/msw/scenarios";
 import type { Nft } from "../types/nft";
 import type { OrderRequest } from "../types/payment";
 import type { HomeTab, SortOption } from "../types/search";
 import { nfts } from "./data";
 import { buildNftDetail } from "./detail";
+import { favoritesHandlers } from "./favorites";
 import { buildCartQuote } from "./cartQuote";
 import { placeOrder } from "./orders";
+import { getSettleMs, realtimeHandlers, scheduleSettlement } from "./realtime";
 
 function countBy(list: Nft[], key: "category" | "network") {
   return list.reduce<Record<string, number>>((counts, nft) => {
@@ -15,10 +19,18 @@ function countBy(list: Nft[], key: "category" | "network") {
 }
 
 export const handlers = [
+  ...realtimeHandlers,
+  ...favoritesHandlers,
   http.post("/api/orders", async ({ request }) => {
     const body = (await request.json()) as OrderRequest;
+    const auth = await authenticate(request);
+    if ("response" in auth) return auth.response;
+    const userId = auth.user.id;
     await delay(900);
-    const result = placeOrder(body);
+    const result = placeOrder(body, userId, getSettleMs());
+    if (result.status === 202) scheduleSettlement(result.body.key, Date.now() + getSettleMs());
+    const lost = await applyAfterRules(request);
+    if (lost) return lost;
     return HttpResponse.json(result.body, { status: result.status });
   }),
   http.post("/api/cart/quote", async ({ request }) => {

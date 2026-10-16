@@ -69,7 +69,7 @@ export function HeroCarousel() {
             <Button asChild className="primary-button">
               <a href="#catalogo">EXPLORAR</a>
             </Button>
-            <div className="hero-dots" aria-label="Selecionar destaque">
+            <div className="hero-dots" role="group" aria-label="Selecionar destaque">
               {slides.length > 1 ? (
                 slides.map((item, dotIndex) => (
                   <button

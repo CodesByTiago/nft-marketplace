@@ -14,7 +14,7 @@ export function CartPreview({ items }: { items: CartEntry[] }) {
     <div className="cart-preview-wrap">
       <Button variant="ghost" size="icon-lg" className="desktop-cart" asChild>
         <Link to="/carrinho" aria-label={`Abrir carrinho, ${count} itens`}>
-          <img src="/images/icon-cart.svg" alt="" />
+          <img src="/images/icon-cart.svg" alt="" width="24" height="24" />
           {count > 0 && (
             <span className="cart-count" key={count}>
               <img src="/images/icon-badge.svg" alt="" />

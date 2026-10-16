@@ -89,7 +89,7 @@ export function SiteFooter() {
             <div className="footer-social-icons">
               {socialIcons.map((icon, index) => (
                 <a href="#inicio" aria-label={`Rede social ${index + 1}`} key={icon}>
-                  <img src={`/images/${icon}`} alt="" />
+                  <img src={`/images/${icon}`} alt="" width="32" height="32" />
                 </a>
               ))}
             </div>

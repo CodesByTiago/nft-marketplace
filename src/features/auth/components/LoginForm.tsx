@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from "react";
-import type { SessionUser } from "@/core/auth/AuthContext";
+import type { Session } from "@/core/auth/session";
 import { login } from "../services/authService";
 import { validateLogin, type FieldErrors, type LoginInput } from "../types";
 import { PasswordField, TextField } from "./Fields";
 import { SocialButtons } from "./SocialButtons";
 
-export function LoginForm({ onSuccess }: { onSuccess: (user: SessionUser) => void }) {
+export function LoginForm({ onSuccess }: { onSuccess: (session: Session) => void }) {
   const [values, setValues] = useState<LoginInput>({ email: "", password: "" });
   const [errors, setErrors] = useState<FieldErrors<LoginInput>>({});
   const [failure, setFailure] = useState("");

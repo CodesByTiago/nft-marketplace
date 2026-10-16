@@ -12,6 +12,10 @@ export type Nft = {
   totalEditions: number;
   isNew?: boolean;
   trending?: boolean;
+  /** Ausente significa disponível; `false` marca a edição como esgotada. */
+  available?: boolean;
+  /** Versão do último `nft.updated` aplicado; usada para descartar eventos antigos. */
+  version?: number;
 };
 
 export type CartEntry = {
@@ -53,6 +57,8 @@ export type CartQuote = {
   networkFee: string;
   total: string;
   coupon?: { code: string; status: CouponStatus; percent: number };
+  /** Itens do carrinho que deixaram de estar disponíveis; ficam fora dos totais. */
+  unavailable?: string[];
 };
 
 export type NftResults = {

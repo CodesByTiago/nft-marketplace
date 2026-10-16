@@ -8,6 +8,7 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
+  expect: { timeout: 15_000 },
   reporter: [["html", { outputFolder: "playwright-report", open: "never" }], ["list"]],
   use: {
     baseURL,

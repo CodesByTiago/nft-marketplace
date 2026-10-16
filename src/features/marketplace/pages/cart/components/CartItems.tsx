@@ -35,13 +35,15 @@ export function CartItems({ items, onQuantity, onRemove }: CartItemsProps) {
                 Edição: {nft.edition}/{nft.totalEditions}
               </span>
             </div>
-            <span className="cart-row-price">{nft.price} ETH</span>
+            <span className="cart-row-price">{nft.available === false ? "Esgotado" : `${nft.price} ETH`}</span>
             <QuantityStepper
               value={quantity}
               max={nft.totalEditions}
               onChange={(value) => onQuantity(nft.id, value - quantity)}
             />
-            <strong className="cart-row-total">{formatEth(toWei(nft.price) * BigInt(quantity))} ETH</strong>
+            <strong className="cart-row-total">
+              {nft.available === false ? "—" : `${formatEth(toWei(nft.price) * BigInt(quantity))} ETH`}
+            </strong>
             <button
               type="button"
               className="cart-row-remove"

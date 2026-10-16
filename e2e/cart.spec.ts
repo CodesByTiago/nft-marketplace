@@ -9,7 +9,7 @@ const seeded = [
 
 async function seedCart(page: Page) {
   await page.addInitScript((entries) => {
-    if (!localStorage.getItem("kurio-cart")) localStorage.setItem("kurio-cart", JSON.stringify(entries));
+    if (!localStorage.getItem("kurio-cart:guest")) localStorage.setItem("kurio-cart:guest", JSON.stringify(entries));
   }, seeded);
 }
 

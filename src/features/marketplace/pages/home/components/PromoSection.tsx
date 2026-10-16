@@ -25,7 +25,7 @@ export function PromoSection() {
             <h2>{title}</h2>
             <p>{description}</p>
             <a href="#catalogo">
-              Explorar <img src="/images/promo-arrow.svg" alt="" />
+              Explorar <img src="/images/promo-arrow.svg" alt="" width="11" height="13" />
             </a>
           </div>
           <img className="promo-mask" src="/images/promo-mask.svg" alt="" />

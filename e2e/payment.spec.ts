@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { nfts } from "../src/features/marketplace/mocks/data";
+import { demo, loginAs, seedCartFor } from "./support";
 
 const seeded = [
   { nft: nfts[0], quantity: 2 },
@@ -8,9 +9,8 @@ const seeded = [
 ];
 
 async function seedCart(page: Page) {
-  await page.addInitScript((entries) => {
-    if (!localStorage.getItem("kurio-cart")) localStorage.setItem("kurio-cart", JSON.stringify(entries));
-  }, seeded);
+  await loginAs(page);
+  await seedCartFor(page, seeded, demo.id);
 }
 
 async function fillProfile(page: Page) {
@@ -41,13 +41,17 @@ async function settle(page: Page) {
   await page.waitForTimeout(800);
 }
 
-test("o carrinho leva ao pagamento levando o cupom aplicado", async ({ page }) => {
-  await seedCart(page);
+test("visitante entra pelo diálogo e segue ao pagamento com o cupom aplicado", async ({ page }) => {
+  await seedCartFor(page, seeded);
   await page.goto("/carrinho");
   await page.getByLabel("Código promocional").fill("kurio10");
   await page.getByRole("button", { name: "Aplicar" }).click();
   await expect(page.locator(".cart-discount")).toContainText("0.61");
   await page.getByRole("button", { name: "Conectar e finalizar" }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel("E-mail").fill(demo.email);
+  await dialog.getByLabel("Senha", { exact: true }).fill(demo.password);
+  await dialog.locator(".auth-submit").click();
   await expect(page).toHaveURL(/\/pagamento\?coupon=KURIO10$/);
   await expect(page.locator(".pay-totals")).toContainText("(-) 0.61");
   await expect(page.locator(".pay-total")).toContainText("5.470 ETH");
@@ -83,7 +87,7 @@ test("confirma a compra, mostra o recibo e remove só os itens comprados", async
     "href",
     /^https:\/\/etherscan\.io\/tx\/0x[0-9a-f]{64}$/,
   );
-  expect(await page.evaluate(() => localStorage.getItem("kurio-cart"))).toBe("[]");
+  expect(await page.evaluate(() => localStorage.getItem("kurio-cart:u-demo"))).toBe("[]");
 
   // O recibo sobrevive a um refresh até ser fechado.
   await page.reload();
@@ -103,7 +107,7 @@ test("compra recusada preserva os itens e permite tentar com outra carteira", as
   await page.getByRole("button", { name: "Confirmar compra" }).click();
   await expect(page.getByRole("alert").filter({ hasText: "recusada na carteira" })).toBeVisible();
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("kurio-cart") ?? "[]").length)).toBe(3);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("kurio-cart:u-demo") ?? "[]").length)).toBe(3);
 
   await page.getByRole("radio", { name: "MetaMask" }).check();
   await page.getByRole("button", { name: "Confirmar compra" }).click();
@@ -172,4 +176,11 @@ test("o recibo corresponde à baseline visual", async ({ page }) => {
     caret: "hide",
     mask: [receipt.locator(".receipt-meta > div").first()],
   });
+});
+
+test("sem sessão o pagamento pede login", async ({ page }) => {
+  await seedCartFor(page, seeded);
+  await page.goto("/pagamento");
+  await expect(page.getByRole("heading", { name: "Entre para finalizar a compra" })).toBeVisible();
+  await expect(page.locator("#pay-displayName")).toHaveCount(0);
 });

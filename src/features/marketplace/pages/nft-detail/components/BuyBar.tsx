@@ -12,6 +12,7 @@ type BuyBarProps = {
 };
 
 export function BuyBar({ nft, quantity, onQuantity, onBuy, onAdd }: BuyBarProps) {
+  const soldOut = nft.available === false;
   return (
     <div className="buy-bar">
       <div className="buy-bar-top">
@@ -19,10 +20,10 @@ export function BuyBar({ nft, quantity, onQuantity, onBuy, onAdd }: BuyBarProps)
           <span>Qtd.</span>
           <QuantityStepper value={quantity} max={nft.totalEditions} onChange={onQuantity} />
         </div>
-        <strong>{nft.price} ETH</strong>
+        <strong>{soldOut ? "Esgotado" : `${nft.price} ETH`}</strong>
       </div>
       <div className="buy-bar-actions">
-        <Button className="buy-bar-buy" onClick={onBuy}>
+        <Button className="buy-bar-buy" onClick={onBuy} disabled={soldOut}>
           Comprar NFT
         </Button>
         <Button
@@ -30,6 +31,7 @@ export function BuyBar({ nft, quantity, onQuantity, onBuy, onAdd }: BuyBarProps)
           size="icon-lg"
           className="buy-bar-cart"
           aria-label={`Adicionar ${nft.name} ao carrinho`}
+          disabled={soldOut}
           onClick={onAdd}
         >
           <ShoppingBag aria-hidden="true" />

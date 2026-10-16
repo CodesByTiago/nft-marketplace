@@ -23,7 +23,10 @@ export type OrderItem = {
 // Snapshot imutável: o recibo não depende mais do carrinho nem do catálogo.
 export type Order = {
   id: string;
-  status: "confirmed" | "declined";
+  /** Chave de idempotência: identifica o pedido nas consultas e eventos. */
+  key: string;
+  version: number;
+  status: "pending" | "confirmed" | "declined";
   reason?: string;
   txHash: string;
   createdAt: string;

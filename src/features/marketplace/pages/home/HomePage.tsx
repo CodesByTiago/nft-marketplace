@@ -51,11 +51,14 @@ export default function HomePage() {
   const locationState = useLocation({ select: (location) => location.state as { q?: string } });
   const [searchTerm, setSearchTerm] = useState(locationState.q ?? "");
   const { cart, cartCount, addToCart, toast, dismissToast } = useCartPanel();
-  const { favorites, toggleFavorite } = useFavorites();
+  const { favorites, toggleFavorite, failed: favoriteFailed } = useFavorites();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
 
   const { data, isPending, isError, refetch } = useQuery({
+    // Falhas transitórias são absorvidas com poucas retentativas rápidas.
+    retry: 2,
+    retryDelay: 400,
     queryKey: ["nfts", searchTerm, tab, category, collection, network, minPrice, maxPrice, sort, page],
     queryFn: () =>
       getNfts({
@@ -153,6 +156,11 @@ export default function HomePage() {
                 onTab={(value) => updateSearch({ tab: value, page: 1 })}
                 onSort={(value) => updateSearch({ sort: value, page: 1 })}
               />
+              {favoriteFailed && (
+                <p role="alert" className="catalog-notice">
+                  Não foi possível atualizar seus favoritos. Tente novamente.
+                </p>
+              )}
               {isError ? (
                 <div className="catalog-message" role="alert">
                   <h3>Não foi possível carregar os NFTs</h3>
@@ -189,10 +197,11 @@ export default function HomePage() {
                 </div>
               ) : (
                 <div className="nft-grid">
-                  {visibleNfts.map((nft) => (
+                  {visibleNfts.map((nft, index) => (
                     <NftCard
                       key={nft.id}
                       nft={nft}
+                      priority={index < 2}
                       favorite={favorites.includes(nft.id)}
                       onFavorite={() => toggleFavorite(nft.id)}
                       onAdd={() => addToCart(nft)}

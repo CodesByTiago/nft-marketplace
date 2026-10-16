@@ -22,7 +22,7 @@ const DEFAULT_EDITION = "1/50";
 // O carrinho guarda apenas os campos do catálogo, não o detalhe completo.
 function toCartNft(detail: NftDetail): Nft {
   const { id, name, collection, artist, price, previousPrice, image, category, network } = detail;
-  const { edition, totalEditions, isNew, trending } = detail;
+  const { edition, totalEditions, isNew, trending, available, version } = detail;
   return {
     id,
     name,
@@ -37,6 +37,8 @@ function toCartNft(detail: NftDetail): Nft {
     totalEditions,
     isNew,
     trending,
+    available,
+    version,
   };
 }
 

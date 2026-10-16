@@ -15,9 +15,15 @@ export async function createOrder(request: OrderRequest) {
     return data;
   } catch (error) {
     const response = (error as { response?: { status?: number; data?: QuoteChanged } }).response;
-    if (response?.status === 409 && response.data) throw new QuoteChangedError(response.data.total);
+    if (response?.status === 409 && response.data?.code === "quote-changed")
+      throw new QuoteChangedError(response.data.total);
     throw error;
   }
+}
+
+export async function getOrder(key: string) {
+  const { data } = await apiClient.get<Order>(`/orders/${encodeURIComponent(key)}`);
+  return data;
 }
 
 export async function getCartQuote(items: { id: string; quantity: number }[], coupon?: string) {

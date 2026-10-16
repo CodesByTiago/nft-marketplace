@@ -1,11 +1,39 @@
+import { useAuth } from "@/core/auth/AuthContext";
 import type { CartEntry, Nft } from "@/features/marketplace/types/nft";
-import { useStoredState } from "./useStoredState";
+import { useEffect } from "react";
+import { readStoredValue, useStoredState, writeStored } from "./useStoredState";
 
-const CART_KEY = "kurio-cart";
+export const cartKey = (userId: string) => `kurio-cart:${userId}`;
 const emptyCart: CartEntry[] = [];
 
+function mergeCarts(own: CartEntry[], guest: CartEntry[]) {
+  const merged = [...own];
+  for (const entry of guest) {
+    const index = merged.findIndex((item) => item.nft.id === entry.nft.id);
+    if (index < 0) merged.push(entry);
+    else {
+      const item = merged[index];
+      merged[index] = { ...item, quantity: Math.min(item.quantity + entry.quantity, item.nft.totalEditions) };
+    }
+  }
+  return merged;
+}
+
 export function useCart() {
-  const [cart, setCart] = useStoredState<CartEntry[]>(CART_KEY, emptyCart);
+  const { user } = useAuth();
+  // Cada usuário tem o próprio carrinho; visitantes usam o carrinho "guest", mesclado ao entrar.
+  const [cart, setCart] = useStoredState<CartEntry[]>(cartKey(user?.id ?? "guest"), emptyCart);
+  const userId = user?.id;
+
+  // Ao entrar, o carrinho de visitante é mesclado ao da conta e descartado.
+  useEffect(() => {
+    if (!userId) return;
+    const guest = readStoredValue(cartKey("guest"), emptyCart);
+    if (!guest.length) return;
+    writeStored(cartKey("guest"), emptyCart);
+    writeStored(cartKey(userId), mergeCarts(readStoredValue(cartKey(userId), emptyCart), guest));
+  }, [userId]);
+
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   function addToCart(nft: Nft, quantity = 1) {

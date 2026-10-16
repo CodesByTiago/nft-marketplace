@@ -1,12 +1,7 @@
-import { createRootRoute, createRoute, createRouter, Outlet } from "@tanstack/react-router";
+import { createRootRoute, createRoute, createRouter, lazyRouteComponent, Outlet } from "@tanstack/react-router";
 import HomePage from "@/features/marketplace/pages/home/HomePage";
-import CartPage from "@/features/marketplace/pages/cart/CartPage";
-import NftDetailPage from "@/features/marketplace/pages/nft-detail/NftDetailPage";
-import PaymentPage from "@/features/marketplace/pages/payment/PaymentPage";
-import ProfilePage from "@/features/marketplace/pages/profile/ProfilePage";
 import { MaintenancePage } from "@/features/marketplace/pages/profile/MaintenancePage";
 import type { AccountSection } from "@/features/marketplace/pages/profile/components/AccountSidebar";
-import WalletsPage from "@/features/marketplace/pages/wallets/WalletsPage";
 import { defaultFilters, homeTabs, sortOptions, type HomeSearch } from "@/features/marketplace/types/search";
 
 const rootRoute = createRootRoute({ component: Outlet });
@@ -37,13 +32,13 @@ const homeRoute = createRoute({
 const nftDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/nft/$nftId",
-  component: NftDetailPage,
+  component: lazyRouteComponent(() => import("@/features/marketplace/pages/nft-detail/NftDetailPage")),
 });
 
 const cartRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/carrinho",
-  component: CartPage,
+  component: lazyRouteComponent(() => import("@/features/marketplace/pages/cart/CartPage")),
 });
 
 const paymentRoute = createRoute({
@@ -52,19 +47,19 @@ const paymentRoute = createRoute({
   validateSearch: (search: Record<string, unknown>): { coupon?: string } => ({
     coupon: typeof search.coupon === "string" && search.coupon ? search.coupon : undefined,
   }),
-  component: PaymentPage,
+  component: lazyRouteComponent(() => import("@/features/marketplace/pages/payment/PaymentPage")),
 });
 
 const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/perfil",
-  component: ProfilePage,
+  component: lazyRouteComponent(() => import("@/features/marketplace/pages/profile/ProfilePage")),
 });
 
 const walletsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/perfil/carteiras",
-  component: WalletsPage,
+  component: lazyRouteComponent(() => import("@/features/marketplace/pages/wallets/WalletsPage")),
 });
 
 const maintenanceRoutes = (

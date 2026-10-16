@@ -1,13 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-
-async function login(page: Page) {
-  await page.addInitScript(() => {
-    localStorage.setItem(
-      "kurio-session",
-      JSON.stringify({ id: "u-demo", username: "colecionador", email: "contato@email.com" }),
-    );
-  });
-}
+import { loginAs as login } from "./support";
 
 async function settle(page: Page) {
   await page.waitForLoadState("networkidle");
@@ -60,7 +52,7 @@ test("valida e salva a carteira principal e a secundária", async ({ page }) => 
   await expect(page.locator("#wallet-address-error")).toContainText("endereço 0x válido");
   await page.locator("#wallet-address").fill("0xA91F3c5b7d9e1a2b4c6d8e0f1a3b5c7d9e0fE82C");
   await page.getByRole("button", { name: "Salvar carteira", exact: true }).click();
-  await expect(page.getByRole("status")).toHaveText("Carteira principal salva.");
+  await expect(page.locator(".account-saved")).toHaveText("Carteira principal salva.");
 
   await page.getByLabel("Igual à carteira principal").check();
   await expect(page.getByTestId("secondary-summary")).toContainText("Principal · Ethereum");

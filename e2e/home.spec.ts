@@ -28,7 +28,7 @@ test("o destaque mantém um único slide e leva ao catálogo", async ({ page }) 
   await expect(carousel.locator(".hero-dot")).toHaveCount(1);
 
   await page.waitForTimeout(5500);
-  await expect(carousel.getByRole("group")).toHaveCount(1);
+  await expect(carousel.getByRole("group", { name: /^Slide / })).toHaveCount(1);
 
   await carousel.getByRole("link", { name: "EXPLORAR" }).click();
   await expect(page).toHaveURL(/#catalogo$/);
@@ -40,7 +40,7 @@ test("combina filtros e adiciona um NFT ao carrinho", async ({ page }) => {
   await page.getByRole("button", { name: /Fotografia/ }).click();
   await expect(page.locator(".nft-card")).toHaveCount(5);
   await expect(page.getByRole("button", { name: "Fotografia (5)" })).toBeVisible();
-  await expect(page.locator(".nft-card h3").filter({ hasText: "Cosmic Bloom" })).toHaveCount(5);
+  await expect(page.locator(".nft-card h2").filter({ hasText: "Cosmic Bloom" })).toHaveCount(5);
 
   await expect(page).toHaveURL(/category=Fotografia/);
   await expect(page).not.toHaveURL(/q=/);

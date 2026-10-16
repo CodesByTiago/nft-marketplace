@@ -66,7 +66,7 @@
   .nft-artwork-link > img { width: min(168px, calc(100% - 8px)); height: min(168px, calc(100% - 8px)); margin-top: 12px; border-radius: 13px; }
   .favorite-button { top: 8px; right: 8px; width: 28px; height: 28px; background: #3a2118; }
   .nft-card-content { padding: 8px 8px 0; }
-  .nft-card-content h3 { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+  .nft-card-content h2 { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
   .nft-card-footer { margin-top: 0; }
   .nft-card-footer strong { font-size: 14px; letter-spacing: .04em; }
   .nft-card-footer .add-to-cart { display: none; }

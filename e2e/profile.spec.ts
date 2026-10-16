@@ -1,13 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-
-async function login(page: Page) {
-  await page.addInitScript(() => {
-    localStorage.setItem(
-      "kurio-session",
-      JSON.stringify({ id: "u-demo", username: "colecionador", email: "contato@email.com" }),
-    );
-  });
-}
+import { loginAs as login } from "./support";
 
 async function settle(page: Page) {
   await page.waitForLoadState("networkidle");
@@ -44,7 +36,7 @@ test("valida, salva e mantém os dados do perfil", async ({ page }) => {
   await page.locator("#account-current").fill("kurio1234");
   await page.locator("#account-confirm").fill("12345678");
   await page.getByRole("button", { name: "Salvar" }).click();
-  await expect(page.getByRole("status")).toHaveText("Alterações salvas.");
+  await expect(page.locator(".account-saved")).toHaveText("Alterações salvas.");
   await page.reload();
   await expect(page.locator("#account-displayName")).toHaveValue("Nova Colecionadora");
   await expect(page.locator("#account-current")).toHaveValue("");

@@ -4,7 +4,7 @@ test("os cards de 'Mais desta coleção' têm o mesmo tamanho", async ({ page })
   for (const width of [1440, 1100, 414]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
-    const href = await page.locator(".nft-card h3 a").first().getAttribute("href");
+    const href = await page.locator(".nft-card h2 a").first().getAttribute("href");
     await page.goto(href!);
     const items = page.locator(".related-grid li");
     await expect(items).toHaveCount(5);

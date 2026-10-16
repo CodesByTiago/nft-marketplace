@@ -11,9 +11,14 @@ const coupons: Record<string, { percent: number; status: CouponStatus }> = {
 };
 
 export function buildCartQuote(items: { id: string; quantity: number }[], rawCoupon?: string): CartQuote {
+  const unavailable = items
+    .filter((item) => nfts.find((candidate) => candidate.id === item.id)?.available === false)
+    .map((item) => item.id);
   const subtotal = items.reduce((sum, item) => {
     const nft = nfts.find((candidate) => candidate.id === item.id);
-    return nft ? sum + toWei(nft.price) * BigInt(Math.max(0, Math.floor(item.quantity))) : sum;
+    return nft && nft.available !== false
+      ? sum + toWei(nft.price) * BigInt(Math.max(0, Math.floor(item.quantity)))
+      : sum;
   }, 0n);
 
   const code = rawCoupon?.trim().toUpperCase();
@@ -29,5 +34,6 @@ export function buildCartQuote(items: { id: string; quantity: number }[], rawCou
     networkFee: NETWORK_FEE,
     total: formatEth(subtotal - discount + fee, 3),
     coupon: code && status ? { code, status, percent } : undefined,
+    unavailable: unavailable.length ? unavailable : undefined,
   };
 }

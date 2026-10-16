@@ -64,7 +64,7 @@ export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, o
         </nav>
         <div className="header-actions">
           <label className="header-search">
-            <img src="/images/icon-search.svg" alt="" />
+            <img src="/images/icon-search.svg" alt="" width="20" height="20" />
             <Input
               value={search}
               onChange={(event) => onSearch(event.target.value)}
@@ -80,7 +80,7 @@ export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, o
             <Button className="login-button is-user" asChild>
               <Link to="/perfil" aria-label={`Meu perfil (${user.username})`}>
                 <span className="login-icon" aria-hidden="true">
-                  <img src="/images/icon-login.svg" alt="" />
+                  <img src="/images/icon-login.svg" alt="" width="18" height="17" />
                 </span>
                 <span className="login-name">{user.username}</span>
               </Link>
@@ -88,7 +88,7 @@ export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, o
           ) : (
             <Button className="login-button" onClick={() => openAuth("login")}>
               <span className="login-icon" aria-hidden="true">
-                <img src="/images/icon-login.svg" alt="" />
+                <img src="/images/icon-login.svg" alt="" width="18" height="17" />
               </span>
               Entrar
             </Button>

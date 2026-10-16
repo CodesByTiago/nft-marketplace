@@ -23,14 +23,14 @@ async function openStableDetail(page: Page, id: string) {
 
 async function firstNftId(page: Page) {
   await page.goto("/");
-  const href = await page.locator(".nft-card h3 a").first().getAttribute("href");
+  const href = await page.locator(".nft-card h2 a").first().getAttribute("href");
   return href!.split("/").pop()!;
 }
 
 test("abre o detalhe pelo card, escolhe quantidade e compra", async ({ page }) => {
   await page.goto("/");
-  const name = (await page.locator(".nft-card h3").first().textContent())!.trim();
-  await page.locator(".nft-card h3 a").first().click();
+  const name = (await page.locator(".nft-card h2").first().textContent())!.trim();
+  await page.locator(".nft-card h2 a").first().click();
 
   await expect(page).toHaveURL(/\/nft\//);
   await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
@@ -67,7 +67,7 @@ test("a busca do header leva ao catálogo filtrado", async ({ page }) => {
   await search.fill("cosmic bloom");
   await search.press("Enter");
   await expect(page).toHaveURL(/\/$/);
-  await expect(page.locator(".nft-card h3").first()).toContainText("Cosmic Bloom");
+  await expect(page.locator(".nft-card h2").first()).toContainText("Cosmic Bloom");
 });
 
 test("no mobile, a barra de compra adiciona ao carrinho", async ({ page }) => {

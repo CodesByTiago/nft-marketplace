@@ -1,15 +1,18 @@
 import { X } from "lucide-react";
 import { Dialog as DialogPrimitive } from "radix-ui";
-import type { AuthMode, SessionUser } from "@/core/auth/AuthContext";
+import type { AuthMode } from "@/core/auth/AuthContext";
+import type { Session } from "@/core/auth/session";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/shared/ui/dialog";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 
 type AuthDialogProps = {
   mode: AuthMode | null;
+  /** Aviso exibido acima do formulário (ex.: sessão expirada). */
+  notice?: string;
   onModeChange: (mode: AuthMode) => void;
   onClose: () => void;
-  onSuccess: (user: SessionUser) => void;
+  onSuccess: (session: Session) => void;
 };
 
 const copy = {
@@ -31,7 +34,7 @@ const copy = {
   },
 } as const;
 
-export function AuthDialog({ mode, onModeChange, onClose, onSuccess }: AuthDialogProps) {
+export function AuthDialog({ mode, notice, onModeChange, onClose, onSuccess }: AuthDialogProps) {
   const current = copy[mode ?? "login"];
   return (
     <Dialog open={mode !== null} onOpenChange={(open) => !open && onClose()}>
@@ -60,6 +63,11 @@ export function AuthDialog({ mode, onModeChange, onClose, onSuccess }: AuthDialo
           ))}
         </div>
         <DialogDescription className="auth-text">{current.text}</DialogDescription>
+        {notice && (
+          <p role="alert" className="auth-notice">
+            {notice}
+          </p>
+        )}
         {mode === "register" ? <RegisterForm onSuccess={onSuccess} /> : <LoginForm onSuccess={onSuccess} />}
         <p className="auth-switch">
           {current.switchText}{" "}

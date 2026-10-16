@@ -1,14 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { App } from "./app/App";
+
 import "./styles.css";
 
 async function bootstrap() {
   if (import.meta.env.VITE_ENABLE_MOCKS !== "false") {
-    const { worker } = await import("./app/mocks/browser");
+    const { worker, resumeMocks } = await import("./app/mocks/browser");
     await worker.start({ onUnhandledRequest: "bypass", quiet: true });
+    resumeMocks();
   }
 
+  const { App } = await import("./app/App");
   const rootElement = document.getElementById("root");
   if (!rootElement) throw new Error("Root element was not found.");
 
