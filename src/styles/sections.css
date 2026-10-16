@@ -1,0 +1,24 @@
+.promo-section { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; margin-top: 96px; }
+.promo-card { position: relative; display: grid; min-height: 250px; grid-template-columns: 1fr 1fr; overflow: hidden; border-radius: 8px; background: var(--surface); }
+.promo-card::before { position: absolute; inset: 0; background: linear-gradient(90deg, transparent 36%, var(--surface) 52%); content: ""; }
+.promo-card > img:not(.promo-mask) { width: 100%; height: 250px; object-fit: cover; }
+.promo-genesis > img:not(.promo-mask) { border-radius: 18px; }
+.promo-curated > img:not(.promo-mask) { border-radius: 17px; }
+.promo-mask { position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; }
+.promo-copy { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 20px 30px 20px 8px; text-align: right; }
+.promo-copy h2 { margin: 0 0 14px; white-space: pre-line; font-size: 18px; line-height: 24px; }
+.promo-copy p { max-width: 263px; margin: 0; color: var(--muted); font-size: 14px; line-height: 24px; }
+.promo-copy a { display: inline-flex; width: 140px; height: 40px; align-items: center; justify-content: space-between; margin-top: 20px; padding: 0 12px 0 26px; border-radius: 6px; background: var(--primary-kurio); color: var(--bg); font-size: 14px; font-weight: 500; text-align: left; }
+.promo-copy a img { display: block; }
+.blog-section { margin-top: 96px; }
+.blog-section > header { margin-bottom: 40px; text-align: center; }
+.blog-section h2 { margin: 0; font-size: 28px; font-weight: 700; }
+.blog-section header p { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+.blog-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 268px)); justify-content: center; gap: 24px; }
+.blog-card { min-width: 0; overflow: hidden; border-radius: 8px; background: var(--surface); }
+.blog-card > img { display: block; width: 100%; height: 195px; object-fit: cover; }
+.blog-copy { min-height: 0; padding: 12px 16px 16px; }
+.blog-copy > span:first-child { color: var(--muted); font-size: 12px; white-space: pre-wrap; }
+.blog-copy h3 { margin: 8px 0; font-size: 16px; line-height: 1.4; }
+.blog-copy p { min-height: 32px; margin: 0; color: var(--muted); font-size: 12px; line-height: 16px; }
+.blog-read-more { display: inline-flex; gap: 4px; margin-top: 8px; color: var(--primary-light); font-size: 12px; font-weight: 700; }

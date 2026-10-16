@@ -1,0 +1,40 @@
+.site-header { position: sticky; top: 0; z-index: 50; padding-top: 24px; background: var(--bg); }
+.header-inner { display: flex; height: 48px; align-items: flex-start; justify-content: space-between; }
+.brand { display: inline-flex; width: 160px; height: 34.3px; flex: 0 0 160px; align-items: center; font-size: 14px; font-weight: 700; letter-spacing: 1.4px; }
+.brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid var(--primary-kurio); border-radius: 50%; color: var(--primary-light); }
+.brand-mark { display: none; }
+.main-nav { display: flex; align-items: flex-start; gap: 40px; }
+.main-nav a { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; color: var(--foreground); font-size: 16px; line-height: normal; }
+.main-nav a > span[data-label]::after { content: attr(data-label); display: block; height: 0; overflow: hidden; visibility: hidden; font-weight: 700; }
+.main-nav a[aria-current="page"] { color: var(--primary-light); font-weight: 700; }
+.active-underline { display: block; width: 58px; height: 3px; background: url("/images/header-underline.svg") no-repeat; visibility: hidden; }
+.main-nav a[aria-current="page"] .active-underline { visibility: visible; }
+.main-nav a:hover, .back-to-top:hover { color: var(--primary-light); }
+.header-actions { display: flex; height: 35px; align-items: center; gap: 28px; }
+.header-search { position: relative; display: flex; width: 20px; align-items: center; color: var(--muted); }
+.header-search > img { display: block; }
+.header-search input, .mobile-search input { height: 40px; border: 0; background: transparent; font-size: 12px; }
+.header-search input { position: absolute; top: calc(100% + 12px); right: 0; z-index: 10; width: 0; height: 38px; padding: 0; opacity: 0; pointer-events: none; }
+.header-search:focus-within input { width: 190px; padding-inline: 12px; border: 1px solid var(--border-kurio); background: var(--surface); opacity: 1; pointer-events: auto; }
+.header-search input:focus-visible, .mobile-search input:focus-visible { outline: 0; box-shadow: none; }
+.desktop-cart { position: relative; width: 24px; height: 24px; padding: 0; border-radius: 0; }
+.desktop-cart > img { display: block; }
+.cart-count { position: absolute; top: -2px; right: -3px; display: grid; width: 16px; height: 16px; place-items: center; color: var(--bg); font-size: 10px; }
+.cart-count img, .cart-count span { grid-area: 1 / 1; }
+.cart-count img { display: block; }
+.cart-count { animation: cart-pop .4s ease-out; }
+@keyframes cart-pop { 0% { transform: scale(.4); } 60% { transform: scale(1.5); } 100% { transform: scale(1); } }
+.cart-toast { position: fixed; z-index: 60; top: 84px; right: max(24px, calc((100% - 1200px) / 2)); display: flex; width: min(340px, calc(100% - 32px)); align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--primary-kurio); border-radius: 8px; background: var(--surface); box-shadow: 0 8px 24px rgba(10, 6, 4, .6); animation: toast-in .25s ease-out; }
+.cart-toast img { width: 48px; height: 48px; flex: 0 0 48px; border-radius: 6px; object-fit: cover; }
+.cart-toast p { margin: 0 0 4px; font-size: 14px; }
+.cart-toast > div { min-width: 0; flex: 1; }
+.cart-toast > div button { padding: 0; border: 0; background: transparent; color: var(--primary-kurio); font-size: 14px; font-weight: 700; text-decoration: underline; }
+.cart-toast-close { align-self: flex-start; padding: 0; border: 0; background: transparent; color: var(--muted); }
+.cart-toast-close svg { width: 16px; height: 16px; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-8px); } }
+.login-button { width: 100px; height: 35px; gap: 4px; padding: 0; border-radius: 6px; background: var(--primary-kurio); color: var(--bg); font-size: 16px; font-weight: 500; }
+.login-button:hover { background: var(--primary-light); color: var(--bg); }
+.login-icon { display: grid; width: 20px; height: 20px; flex: 0 0 20px; place-items: center; }
+.login-icon img { display: block; }
+.header-divider { height: 1px; transform: translateY(-2px); background: url("/images/header-divider.svg") center / 100% 1px no-repeat; }
+.mobile-search-row { display: none; }
