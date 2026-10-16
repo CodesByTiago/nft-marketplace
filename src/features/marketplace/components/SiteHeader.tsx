@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Search, SlidersHorizontal } from "lucide-react";
+import { useAuth } from "@/core/auth/AuthContext";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { useActiveSection } from "../hooks/useActiveSection";
@@ -28,6 +29,7 @@ export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, o
   const scrollSection = useActiveSection(navIds);
   const activeSection = activeId ?? scrollSection;
   const offHome = activeId !== undefined;
+  const { user, openAuth, logout } = useAuth();
   return (
     <header className="site-header">
       <div className="header-inner page-width">
@@ -76,12 +78,13 @@ export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, o
           <CartPreview items={cart} />
           <Button
             className="login-button"
-            onClick={() => window.alert("A conexão de carteira estará disponível no checkout.")}
+            onClick={user ? logout : () => openAuth("login")}
+            aria-label={user ? `Sair (${user.username})` : undefined}
           >
             <span className="login-icon" aria-hidden="true">
               <img src="/images/icon-login.svg" alt="" />
             </span>
-            Entrar
+            {user ? user.username : "Entrar"}
           </Button>
         </div>
       </div>

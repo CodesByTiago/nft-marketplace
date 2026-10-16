@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useSearch } from "@tanstack/react-router";
 import { Heart, Home, ScanLine, Search, ShoppingBag, UserRound } from "lucide-react";
 import { Button } from "@/shared/ui/button";
+import { useAuth } from "@/core/auth/AuthContext";
 import { getNfts } from "@/features/marketplace/services/nftService";
 import { defaultFilters, type HomeFilters } from "@/features/marketplace/types/search";
 import { useCartPanel } from "@/features/marketplace/hooks/useCartPanel";
@@ -34,6 +35,7 @@ const networkLabels = ["Ethereum", "Polygon", "Solana"];
 
 export default function HomePage() {
   const navigate = useNavigate({ from: "/" });
+  const { user, openAuth, logout } = useAuth();
   const urlSearch = useSearch({ from: "/" });
   const filters: HomeFilters = {
     tab: urlSearch.tab ?? defaultFilters.tab,
@@ -243,8 +245,8 @@ export default function HomePage() {
         <Button
           variant="ghost"
           size="icon-lg"
-          aria-label="Perfil"
-          onClick={() => window.alert("O perfil será disponibilizado em uma próxima etapa.")}
+          aria-label={user ? `Sair (${user.username})` : "Perfil"}
+          onClick={user ? logout : () => openAuth("login")}
         >
           <UserRound aria-hidden="true" />
         </Button>
