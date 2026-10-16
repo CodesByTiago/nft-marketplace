@@ -29,7 +29,7 @@ export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, o
   const scrollSection = useActiveSection(navIds);
   const activeSection = activeId ?? scrollSection;
   const offHome = activeId !== undefined;
-  const { user, openAuth, logout } = useAuth();
+  const { user, openAuth } = useAuth();
   return (
     <header className="site-header">
       <div className="header-inner page-width">
@@ -76,16 +76,23 @@ export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, o
             />
           </label>
           <CartPreview items={cart} />
-          <Button
-            className="login-button"
-            onClick={user ? logout : () => openAuth("login")}
-            aria-label={user ? `Sair (${user.username})` : undefined}
-          >
-            <span className="login-icon" aria-hidden="true">
-              <img src="/images/icon-login.svg" alt="" />
-            </span>
-            {user ? user.username : "Entrar"}
-          </Button>
+          {user ? (
+            <Button className="login-button is-user" asChild>
+              <Link to="/perfil" aria-label={`Meu perfil (${user.username})`}>
+                <span className="login-icon" aria-hidden="true">
+                  <img src="/images/icon-login.svg" alt="" />
+                </span>
+                <span className="login-name">{user.username}</span>
+              </Link>
+            </Button>
+          ) : (
+            <Button className="login-button" onClick={() => openAuth("login")}>
+              <span className="login-icon" aria-hidden="true">
+                <img src="/images/icon-login.svg" alt="" />
+              </span>
+              Entrar
+            </Button>
+          )}
         </div>
       </div>
       <div className="header-divider page-width" aria-hidden="true" />

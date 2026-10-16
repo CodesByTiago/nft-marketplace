@@ -35,7 +35,7 @@ const networkLabels = ["Ethereum", "Polygon", "Solana"];
 
 export default function HomePage() {
   const navigate = useNavigate({ from: "/" });
-  const { user, openAuth, logout } = useAuth();
+  const { user, openAuth } = useAuth();
   const urlSearch = useSearch({ from: "/" });
   const filters: HomeFilters = {
     tab: urlSearch.tab ?? defaultFilters.tab,
@@ -245,8 +245,8 @@ export default function HomePage() {
         <Button
           variant="ghost"
           size="icon-lg"
-          aria-label={user ? `Sair (${user.username})` : "Perfil"}
-          onClick={user ? logout : () => openAuth("login")}
+          aria-label={user ? `Meu perfil (${user.username})` : "Perfil"}
+          onClick={() => (user ? void navigate({ to: "/perfil" }) : openAuth("login"))}
         >
           <UserRound aria-hidden="true" />
         </Button>

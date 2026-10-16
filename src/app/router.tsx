@@ -3,6 +3,7 @@ import HomePage from "@/features/marketplace/pages/home/HomePage";
 import CartPage from "@/features/marketplace/pages/cart/CartPage";
 import NftDetailPage from "@/features/marketplace/pages/nft-detail/NftDetailPage";
 import PaymentPage from "@/features/marketplace/pages/payment/PaymentPage";
+import ProfilePage from "@/features/marketplace/pages/profile/ProfilePage";
 import { defaultFilters, homeTabs, sortOptions, type HomeSearch } from "@/features/marketplace/types/search";
 
 const rootRoute = createRootRoute({ component: Outlet });
@@ -51,8 +52,14 @@ const paymentRoute = createRoute({
   component: PaymentPage,
 });
 
+const profileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/perfil",
+  component: ProfilePage,
+});
+
 export const router = createRouter({
-  routeTree: rootRoute.addChildren([homeRoute, nftDetailRoute, cartRoute, paymentRoute]),
+  routeTree: rootRoute.addChildren([homeRoute, nftDetailRoute, cartRoute, paymentRoute, profileRoute]),
   defaultNotFoundComponent: () => <main className="not-found">Esta página não existe.</main>,
 });
 
