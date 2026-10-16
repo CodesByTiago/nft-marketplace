@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -14,26 +15,57 @@ const navIds = navItems.map((item) => item.id);
 type SiteHeaderProps = {
   cartCount: number;
   search: string;
+  /** Item de menu fixo; sem ele, o ativo acompanha a seção visível da home. */
+  activeId?: string;
   onCart: () => void;
   onSearch: (value: string) => void;
-  onFilters: () => void;
+  onSearchSubmit?: () => void;
+  onFilters?: () => void;
 };
 
-export function SiteHeader({ cartCount, search, onCart, onSearch, onFilters }: SiteHeaderProps) {
-  const activeSection = useActiveSection(navIds);
+export function SiteHeader({
+  cartCount,
+  search,
+  activeId,
+  onCart,
+  onSearch,
+  onSearchSubmit,
+  onFilters,
+}: SiteHeaderProps) {
+  const scrollSection = useActiveSection(navIds);
+  const activeSection = activeId ?? scrollSection;
+  const offHome = activeId !== undefined;
   return (
     <header className="site-header">
       <div className="header-inner page-width">
-        <a className="brand" href="#inicio" aria-label="Kurio, início">
-          <span>KURIO</span>
-        </a>
+        {offHome ? (
+          <Link className="brand" to="/" hash="inicio" aria-label="Kurio, início">
+            <span>KURIO</span>
+          </Link>
+        ) : (
+          <a className="brand" href="#inicio" aria-label="Kurio, início">
+            <span>KURIO</span>
+          </a>
+        )}
         <nav className="main-nav" aria-label="Navegação principal">
-          {navItems.map(({ id, label }) => (
-            <a key={id} href={`#${id}`} aria-current={activeSection === id ? "page" : undefined}>
-              <span data-label={label}>{label}</span>
-              <span className="active-underline" aria-hidden="true" />
-            </a>
-          ))}
+          {navItems.map(({ id, label }) => {
+            const content = (
+              <>
+                <span data-label={label}>{label}</span>
+                <span className="active-underline" aria-hidden="true" />
+              </>
+            );
+            const current = activeSection === id ? "page" : undefined;
+            return offHome ? (
+              <Link key={id} to="/" hash={id} aria-current={current}>
+                {content}
+              </Link>
+            ) : (
+              <a key={id} href={`#${id}`} aria-current={current}>
+                {content}
+              </a>
+            );
+          })}
         </nav>
         <div className="header-actions">
           <label className="header-search">
@@ -41,6 +73,9 @@ export function SiteHeader({ cartCount, search, onCart, onSearch, onFilters }: S
             <Input
               value={search}
               onChange={(event) => onSearch(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") onSearchSubmit?.();
+              }}
               placeholder="Buscar NFTs"
               aria-label="Buscar NFTs"
             />
@@ -78,13 +113,18 @@ export function SiteHeader({ cartCount, search, onCart, onSearch, onFilters }: S
           <Input
             value={search}
             onChange={(event) => onSearch(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") onSearchSubmit?.();
+            }}
             placeholder="Buscar NFTs"
             aria-label="Buscar NFTs"
           />
         </label>
-        <Button variant="outline" size="icon-lg" aria-label="Filtros" onClick={onFilters}>
-          <SlidersHorizontal aria-hidden="true" />
-        </Button>
+        {onFilters && (
+          <Button variant="outline" size="icon-lg" aria-label="Filtros" onClick={onFilters}>
+            <SlidersHorizontal aria-hidden="true" />
+          </Button>
+        )}
       </div>
     </header>
   );

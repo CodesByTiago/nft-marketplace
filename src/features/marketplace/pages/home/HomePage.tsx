@@ -1,24 +1,23 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useLocation, useNavigate, useSearch } from "@tanstack/react-router";
 import { Heart, Home, ScanLine, Search, ShoppingBag, UserRound } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { getNfts } from "@/features/marketplace/services/nftService";
-import type { Nft } from "@/features/marketplace/types/nft";
 import { defaultFilters, type HomeFilters } from "@/features/marketplace/types/search";
-import { useCart } from "@/features/marketplace/hooks/useCart";
+import { useCartPanel } from "@/features/marketplace/hooks/useCartPanel";
 import { useFavorites } from "@/features/marketplace/hooks/useFavorites";
+import { CartDrawer } from "@/features/marketplace/components/CartDrawer";
+import { CartToast } from "@/features/marketplace/components/CartToast";
+import { SiteFooter } from "@/features/marketplace/components/SiteFooter";
+import { SiteHeader } from "@/features/marketplace/components/SiteHeader";
 import { BlogSection } from "./components/BlogSection";
-import { CartDrawer } from "./components/CartDrawer";
-import { CartToast } from "./components/CartToast";
 import { CatalogToolbar } from "./components/CatalogToolbar";
 import { FilterSidebar, type FilterOption } from "./components/FilterSidebar";
 import { HeroCarousel } from "./components/HeroCarousel";
 import { NftCard } from "./components/NftCard";
 import { Pagination } from "./components/Pagination";
 import { PromoSection } from "./components/PromoSection";
-import { SiteFooter } from "./components/SiteFooter";
-import { SiteHeader } from "./components/SiteHeader";
 
 const PAGE_SIZE = 9;
 const categoryLabels = [
@@ -48,14 +47,13 @@ export default function HomePage() {
     page: urlSearch.page ?? defaultFilters.page,
   };
   const { tab, category, collection, network, minPrice, maxPrice, sort, page } = filters;
-  const [searchTerm, setSearchTerm] = useState("");
-  const { cart, cartCount, addToCart: addItem, updateQuantity } = useCart();
+  const locationState = useLocation({ select: (location) => location.state as { q?: string } });
+  const [searchTerm, setSearchTerm] = useState(locationState.q ?? "");
+  const { cart, cartCount, updateQuantity, addToCart, cartOpen, openCart, closeCart, toast, dismissToast } =
+    useCartPanel();
   const { favorites, toggleFavorite } = useFavorites();
-  const [cartOpen, setCartOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [toast, setToast] = useState<Nft | null>(null);
-  const toastTimer = useRef<number>(undefined);
 
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["nfts", searchTerm, tab, category, collection, network, minPrice, maxPrice, sort, page],
@@ -119,18 +117,11 @@ export default function HomePage() {
     return next.join(",");
   }
 
-  function addToCart(nft: Nft) {
-    addItem(nft);
-    setToast(nft);
-    if (toastTimer.current) window.clearTimeout(toastTimer.current);
-    toastTimer.current = window.setTimeout(() => setToast(null), 3500);
-  }
-
   return (
     <div className="min-h-screen overflow-x-clip bg-background text-foreground">
       <SiteHeader
         cartCount={cartCount}
-        onCart={() => setCartOpen(true)}
+        onCart={openCart}
         search={searchTerm}
         onSearch={(value) => setSearchTerm(value)}
         onFilters={() => setFiltersOpen((open) => !open)}
@@ -244,12 +235,7 @@ export default function HomePage() {
         >
           <ScanLine aria-hidden="true" />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon-lg"
-          aria-label={`Abrir carrinho, ${cartCount} itens`}
-          onClick={() => setCartOpen(true)}
-        >
+        <Button variant="ghost" size="icon-lg" aria-label={`Abrir carrinho, ${cartCount} itens`} onClick={openCart}>
           <ShoppingBag aria-hidden="true" />
         </Button>
         <Button
@@ -261,17 +247,8 @@ export default function HomePage() {
           <UserRound aria-hidden="true" />
         </Button>
       </nav>
-      {toast && (
-        <CartToast
-          nft={toast}
-          onView={() => {
-            setToast(null);
-            setCartOpen(true);
-          }}
-          onClose={() => setToast(null)}
-        />
-      )}
-      {cartOpen && <CartDrawer items={cart} onClose={() => setCartOpen(false)} onQuantity={updateQuantity} />}
+      {toast && <CartToast nft={toast} onView={openCart} onClose={dismissToast} />}
+      {cartOpen && <CartDrawer items={cart} onClose={closeCart} onQuantity={updateQuantity} />}
     </div>
   );
 }

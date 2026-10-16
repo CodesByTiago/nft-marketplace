@@ -2,6 +2,7 @@ import { delay, http, HttpResponse } from "msw";
 import type { Nft } from "../types/nft";
 import type { HomeTab, SortOption } from "../types/search";
 import { nfts } from "./data";
+import { buildNftDetail } from "./detail";
 
 function countBy(list: Nft[], key: "category" | "network") {
   return list.reduce<Record<string, number>>((counts, nft) => {
@@ -11,6 +12,12 @@ function countBy(list: Nft[], key: "category" | "network") {
 }
 
 export const handlers = [
+  http.get("/api/nfts/:id", async ({ params }) => {
+    const nft = nfts.find((item) => item.id === params.id);
+    await delay(350);
+    if (!nft) return HttpResponse.json({ message: "NFT não encontrado." }, { status: 404 });
+    return HttpResponse.json(buildNftDetail(nft));
+  }),
   http.post("/api/nfts", async ({ request }) => {
     const body = (await request.json()) as {
       tab?: HomeTab;

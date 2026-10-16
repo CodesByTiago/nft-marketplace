@@ -19,6 +19,32 @@ export type CartEntry = {
   quantity: number;
 };
 
+export type NftReview = {
+  author: string;
+  rating: number;
+  comment: string;
+};
+
+export type NftEdition = {
+  label: string;
+  available: boolean;
+};
+
+export type NftDetail = Nft & {
+  tokenId: string;
+  rating: number;
+  reviewCount: number;
+  summary: string;
+  about: string;
+  description: string[];
+  attributes: string[];
+  editions: NftEdition[];
+  networkNote: string;
+  contract: string;
+  royalties: string;
+  reviews: NftReview[];
+};
+
 export type NftResults = {
   items: Nft[];
   total: number;

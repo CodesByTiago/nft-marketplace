@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Heart, ShoppingBag } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import type { Nft } from "@/features/marketplace/types/nft";
@@ -13,7 +14,14 @@ export function NftCard({ nft, favorite, onFavorite, onAdd }: NftCardProps) {
   return (
     <article className="nft-card">
       <div className="nft-artwork">
-        <img src={nft.image} alt={nft.name} loading="lazy" />
+        <Link
+          to="/nft/$nftId"
+          params={{ nftId: nft.id }}
+          className="nft-artwork-link"
+          aria-label={`Ver detalhes de ${nft.name}`}
+        >
+          <img src={nft.image} alt={nft.name} loading="lazy" />
+        </Link>
         <Button
           className="favorite-button"
           variant="ghost"
@@ -27,7 +35,11 @@ export function NftCard({ nft, favorite, onFavorite, onAdd }: NftCardProps) {
       </div>
       <div className="nft-card-content">
         <span>{nft.collection}</span>
-        <h3>{nft.name}</h3>
+        <h3>
+          <Link to="/nft/$nftId" params={{ nftId: nft.id }}>
+            {nft.name}
+          </Link>
+        </h3>
         <div className="nft-card-footer">
           <div className="nft-card-price">
             <strong>{nft.price} ETH</strong>

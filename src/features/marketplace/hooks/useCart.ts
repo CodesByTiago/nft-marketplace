@@ -8,14 +8,16 @@ export function useCart() {
   const [cart, setCart] = useStoredState<CartEntry[]>(CART_KEY, emptyCart);
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  function addToCart(nft: Nft) {
+  function addToCart(nft: Nft, quantity = 1) {
     setCart((current) => {
       const existing = current.find((item) => item.nft.id === nft.id);
       return existing
         ? current.map((item) =>
-            item.nft.id === nft.id ? { ...item, quantity: Math.min(item.quantity + 1, nft.totalEditions) } : item,
+            item.nft.id === nft.id
+              ? { ...item, quantity: Math.min(item.quantity + quantity, nft.totalEditions) }
+              : item,
           )
-        : [...current, { nft, quantity: 1 }];
+        : [...current, { nft, quantity: Math.min(quantity, nft.totalEditions) }];
     });
   }
 

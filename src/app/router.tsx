@@ -1,5 +1,6 @@
 import { createRootRoute, createRoute, createRouter, Outlet } from "@tanstack/react-router";
 import HomePage from "@/features/marketplace/pages/home/HomePage";
+import NftDetailPage from "@/features/marketplace/pages/nft-detail/NftDetailPage";
 import { defaultFilters, homeTabs, sortOptions, type HomeSearch } from "@/features/marketplace/types/search";
 
 const rootRoute = createRootRoute({ component: Outlet });
@@ -27,8 +28,14 @@ const homeRoute = createRoute({
   component: HomePage,
 });
 
+const nftDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/nft/$nftId",
+  component: NftDetailPage,
+});
+
 export const router = createRouter({
-  routeTree: rootRoute.addChildren([homeRoute]),
+  routeTree: rootRoute.addChildren([homeRoute, nftDetailRoute]),
   defaultNotFoundComponent: () => <main className="not-found">Esta página não existe.</main>,
 });
 

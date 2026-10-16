@@ -63,7 +63,7 @@
   .nft-card:nth-child(even) { transform: translateY(32px); }
   .nft-artwork { height: 200px; border-radius: 17px; }
   .nft-artwork { place-items: start center; }
-  .nft-artwork > img { width: min(168px, calc(100% - 8px)); height: min(168px, calc(100% - 8px)); margin-top: 12px; border-radius: 13px; }
+  .nft-artwork-link > img { width: min(168px, calc(100% - 8px)); height: min(168px, calc(100% - 8px)); margin-top: 12px; border-radius: 13px; }
   .favorite-button { top: 8px; right: 8px; width: 28px; height: 28px; background: #3a2118; }
   .nft-card-content { padding: 8px 8px 0; }
   .nft-card-content h3 { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
