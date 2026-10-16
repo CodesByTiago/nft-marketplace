@@ -1,9 +1,11 @@
 import { delay, http, HttpResponse } from "msw";
 import type { Nft } from "../types/nft";
+import type { OrderRequest } from "../types/payment";
 import type { HomeTab, SortOption } from "../types/search";
 import { nfts } from "./data";
 import { buildNftDetail } from "./detail";
 import { buildCartQuote } from "./cartQuote";
+import { placeOrder } from "./orders";
 
 function countBy(list: Nft[], key: "category" | "network") {
   return list.reduce<Record<string, number>>((counts, nft) => {
@@ -13,6 +15,12 @@ function countBy(list: Nft[], key: "category" | "network") {
 }
 
 export const handlers = [
+  http.post("/api/orders", async ({ request }) => {
+    const body = (await request.json()) as OrderRequest;
+    await delay(900);
+    const result = placeOrder(body);
+    return HttpResponse.json(result.body, { status: result.status });
+  }),
   http.post("/api/cart/quote", async ({ request }) => {
     const body = (await request.json()) as { items?: { id: string; quantity: number }[]; coupon?: string };
     await delay(400);

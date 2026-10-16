@@ -2,6 +2,7 @@ import { createRootRoute, createRoute, createRouter, Outlet } from "@tanstack/re
 import HomePage from "@/features/marketplace/pages/home/HomePage";
 import CartPage from "@/features/marketplace/pages/cart/CartPage";
 import NftDetailPage from "@/features/marketplace/pages/nft-detail/NftDetailPage";
+import PaymentPage from "@/features/marketplace/pages/payment/PaymentPage";
 import { defaultFilters, homeTabs, sortOptions, type HomeSearch } from "@/features/marketplace/types/search";
 
 const rootRoute = createRootRoute({ component: Outlet });
@@ -41,8 +42,17 @@ const cartRoute = createRoute({
   component: CartPage,
 });
 
+const paymentRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/pagamento",
+  validateSearch: (search: Record<string, unknown>): { coupon?: string } => ({
+    coupon: typeof search.coupon === "string" && search.coupon ? search.coupon : undefined,
+  }),
+  component: PaymentPage,
+});
+
 export const router = createRouter({
-  routeTree: rootRoute.addChildren([homeRoute, nftDetailRoute, cartRoute]),
+  routeTree: rootRoute.addChildren([homeRoute, nftDetailRoute, cartRoute, paymentRoute]),
   defaultNotFoundComponent: () => <main className="not-found">Esta página não existe.</main>,
 });
 

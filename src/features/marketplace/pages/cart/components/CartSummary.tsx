@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { getCartQuote } from "@/features/marketplace/services/nftService";
 import type { CartEntry, CouponStatus } from "@/features/marketplace/types/nft";
 import { formatEth, toWei } from "@/features/marketplace/utils/eth";
@@ -13,7 +13,7 @@ const couponMessages: Record<Exclude<CouponStatus, "applied">, string> = {
 export function CartSummary({ items }: { items: CartEntry[] }) {
   const [code, setCode] = useState("");
   const [applied, setApplied] = useState("");
-  const [notice, setNotice] = useState(false);
+  const navigate = useNavigate();
   const lines = items.map(({ nft, quantity }) => ({ id: nft.id, quantity }));
 
   const {
@@ -108,14 +108,16 @@ export function CartSummary({ items }: { items: CartEntry[] }) {
         </dl>
       )}
 
-      <button type="button" className="cart-checkout" disabled={!quote} onClick={() => setNotice(true)}>
+      <button
+        type="button"
+        className="cart-checkout"
+        disabled={!quote}
+        onClick={() =>
+          void navigate({ to: "/pagamento", search: { coupon: couponApplied ? coupon?.code : undefined } })
+        }
+      >
         Conectar e finalizar
       </button>
-      {notice && (
-        <p className="cart-notice" role="status">
-          A conexão da carteira e o checkout chegam na próxima etapa.
-        </p>
-      )}
       <Link className="cart-continue" to="/">
         Continuar explorando
       </Link>

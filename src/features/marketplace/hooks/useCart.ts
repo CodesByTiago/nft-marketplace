@@ -35,5 +35,9 @@ export function useCart() {
     setCart((current) => current.filter((item) => item.nft.id !== id));
   }
 
-  return { cart, cartCount, addToCart, updateQuantity, removeFromCart };
+  function removeItems(ids: string[]) {
+    setCart((current) => current.filter((item) => !ids.includes(item.nft.id)));
+  }
+
+  return { cart, cartCount, addToCart, updateQuantity, removeFromCart, removeItems };
 }

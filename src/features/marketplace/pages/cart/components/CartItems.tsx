@@ -3,16 +3,13 @@ import { Link } from "@tanstack/react-router";
 import { QuantityStepper } from "@/features/marketplace/components/QuantityStepper";
 import type { CartEntry } from "@/features/marketplace/types/nft";
 import { formatEth, toWei } from "@/features/marketplace/utils/eth";
+import { tokenId } from "@/features/marketplace/utils/tokenId";
 
 type CartItemsProps = {
   items: CartEntry[];
   onQuantity: (id: string, change: number) => void;
   onRemove: (id: string) => void;
 };
-
-function tokenId(name: string) {
-  return `#${(name.match(/#(\d+)$/)?.[1] ?? "0").padStart(4, "0")}`;
-}
 
 export function CartItems({ items, onQuantity, onRemove }: CartItemsProps) {
   return (
