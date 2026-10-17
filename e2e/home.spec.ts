@@ -19,16 +19,16 @@ async function openStableHome(page: Page) {
   await page.waitForTimeout(300);
 }
 
-test("o destaque mantém um único slide e leva ao catálogo", async ({ page }) => {
+test("o carrossel alterna os destaques e o primeiro leva ao catálogo", async ({ page }) => {
   await page.goto("/");
 
   const carousel = page.getByRole("region", { name: "Destaques", exact: true });
   await expect(carousel).toHaveAttribute("aria-roledescription", "carrossel");
-  await expect(carousel.getByRole("group", { name: "Slide 1 de 1" })).toBeVisible();
-  await expect(carousel.locator(".hero-dot")).toHaveCount(1);
+  await expect(carousel.getByRole("group", { name: "Slide 1 de 2" })).toBeVisible();
+  await expect(carousel.locator(".hero-slide:not([hidden]) .hero-dot")).toHaveCount(2);
 
-  await page.waitForTimeout(5500);
-  await expect(carousel.getByRole("group", { name: /^Slide / })).toHaveCount(1);
+  await expect(carousel.getByRole("group", { name: "Slide 2 de 2" })).toBeVisible({ timeout: 8_000 });
+  await carousel.getByRole("button", { name: "Ir para o destaque 1" }).click();
 
   await carousel.getByRole("link", { name: "EXPLORAR" }).click();
   await expect(page).toHaveURL(/#catalogo$/);

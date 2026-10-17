@@ -1,29 +1,5 @@
-const articles = [
-  {
-    date: "12 de setembro  |  Leitura de 6 min",
-    title: "Como funciona a propriedade de NFTs",
-    description: "Aprenda a colecionar, negociar e verificar ativos digitais.",
-    image: "/images/nft-noir.webp",
-  },
-  {
-    date: "13 de setembro  |  Leitura de 2 min",
-    title: "10 artistas digitais para acompanhar",
-    description: "Conheça criadores que moldam a cultura digital.",
-    image: "/images/nft-hero.webp",
-  },
-  {
-    date: "15 de setembro  |  Leitura de 3 min",
-    title: "Raridade, atributos e procedência",
-    description: "Entenda raridade, procedência, direitos autorais e utilidade.",
-    image: "/images/nft-nomad.webp",
-  },
-  {
-    date: "15 de setembro  |  Leitura de 2 min",
-    title: "Como proteger sua carteira",
-    description: "Proteja sua carteira, seus ativos e sua identidade.",
-    image: "/images/nft-gold.webp",
-  },
-];
+import { Link } from "@tanstack/react-router";
+import { articles } from "@/features/marketplace/content/articles";
 
 export function BlogSection() {
   return (
@@ -34,15 +10,22 @@ export function BlogSection() {
       </header>
       <div className="blog-grid">
         {articles.map((article) => (
-          <article className="blog-card" key={article.title}>
+          <article className="blog-card" key={article.slug}>
             <img src={article.image} alt="" loading="lazy" />
             <div className="blog-copy">
-              <span>{article.date}</span>
+              <span>
+                {article.date} | Leitura de {article.readTime}
+              </span>
               <h3>{article.title}</h3>
               <p>{article.description}</p>
-              <span className="blog-read-more">
+              <Link
+                className="blog-read-more"
+                to="/diario/$slug"
+                params={{ slug: article.slug }}
+                aria-label={`Ler mais: ${article.title}`}
+              >
                 Ler mais <span aria-hidden="true">→</span>
-              </span>
+              </Link>
             </div>
           </article>
         ))}

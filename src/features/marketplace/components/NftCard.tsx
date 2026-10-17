@@ -25,7 +25,7 @@ export function NftCard({ nft, priority = false, favorite, onFavorite, onAdd }: 
             src={nft.image}
             alt={nft.name}
             loading={priority ? "eager" : "lazy"}
-            fetchPriority={priority ? "high" : undefined}
+            {...(priority ? { fetchpriority: "high" } : {})}
           />
         </Link>
         <Button

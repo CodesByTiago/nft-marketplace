@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { Button } from "@/shared/ui/button";
 import type { CartEntry } from "@/features/marketplace/types/nft";
 
@@ -9,6 +9,7 @@ export function CartPreview({ items }: { items: CartEntry[] }) {
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
   const visible = items.slice(0, PREVIEW_ITEMS);
   const hidden = items.length - visible.length;
+  const onCartPage = useLocation({ select: (location) => location.pathname === "/carrinho" });
 
   return (
     <div className="cart-preview-wrap">
@@ -23,34 +24,36 @@ export function CartPreview({ items }: { items: CartEntry[] }) {
           )}
         </Link>
       </Button>
-      <section className="cart-preview" aria-label="Prévia do carrinho">
-        <h2>
-          Carrinho <span>({count})</span>
-        </h2>
-        {visible.length === 0 ? (
-          <p className="cart-preview-empty">Seu carrinho está vazio.</p>
-        ) : (
-          <ul>
-            {visible.map(({ nft, quantity }) => (
-              <li key={nft.id}>
-                <img src={nft.image} alt="" />
-                <div>
-                  <strong>{nft.name}</strong>
-                  <span>
-                    {quantity} × {nft.price} ETH
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-        {hidden > 0 && (
-          <p className="cart-preview-more">{hidden === 1 ? "+ 1 outro item" : `+ ${hidden} outros itens`}</p>
-        )}
-        <Button className="cart-preview-cta" asChild>
-          <Link to="/carrinho">Ver carrinho completo</Link>
-        </Button>
-      </section>
+      {!onCartPage && (
+        <section className="cart-preview" aria-label="Prévia do carrinho">
+          <h2>
+            Carrinho <span>({count})</span>
+          </h2>
+          {visible.length === 0 ? (
+            <p className="cart-preview-empty">Seu carrinho está vazio.</p>
+          ) : (
+            <ul>
+              {visible.map(({ nft, quantity }) => (
+                <li key={nft.id}>
+                  <img src={nft.image} alt="" />
+                  <div>
+                    <strong>{nft.name}</strong>
+                    <span>
+                      {quantity} × {nft.price} ETH
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+          {hidden > 0 && (
+            <p className="cart-preview-more">{hidden === 1 ? "+ 1 outro item" : `+ ${hidden} outros itens`}</p>
+          )}
+          <Button className="cart-preview-cta" asChild>
+            <Link to="/carrinho">Ver carrinho completo</Link>
+          </Button>
+        </section>
+      )}
     </div>
   );
 }

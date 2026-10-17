@@ -63,6 +63,12 @@ const nftDetailRoute = createRoute({
   component: lazyRouteComponent(() => import("@/features/marketplace/pages/nft-detail/NftDetailPage")),
 });
 
+const articleRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/diario/$slug",
+  component: lazyRouteComponent(() => import("@/features/marketplace/pages/article/ArticlePage")),
+});
+
 const cartRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/carrinho",
@@ -115,6 +121,7 @@ export const router = createRouter({
     homeRoute,
     authGateRoute,
     nftDetailRoute,
+    articleRoute,
     cartRoute,
     paymentRoute,
     profileRoute,

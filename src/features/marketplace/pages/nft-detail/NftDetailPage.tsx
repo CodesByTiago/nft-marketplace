@@ -152,7 +152,14 @@ export default function NftDetailPage() {
               />
             </div>
             <NftDescription nft={nft} />
-            <RelatedNfts title="Mais desta coleção" collection={nft.collection} excludeIds={[nft.id]} />
+            <RelatedNfts
+              title="Mais desta coleção"
+              collection={nft.collection}
+              excludeIds={[nft.id]}
+              favorites={favorites}
+              onFavorite={toggleFavorite}
+              onAdd={(related) => addToCart(related)}
+            />
             <BuyBar
               nft={nft}
               quantity={quantity}

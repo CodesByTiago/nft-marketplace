@@ -1,6 +1,8 @@
 .hero-section { position: relative; min-height: 450px; margin-top: 32px; padding: 0; overflow: hidden; background: transparent; }
 .hero-slide { display: grid; min-height: 450px; grid-template-columns: 600px 450px; align-items: center; justify-content: space-between; gap: 0; padding-left: 40px; }
 .hero-slide[hidden] { display: none; }
+.hero-slide:not([hidden]) { animation: hero-slide-in .7s ease both; }
+@keyframes hero-slide-in { from { opacity: 0; transform: translateX(32px); } to { opacity: 1; transform: none; } }
 .hero-copy { position: relative; z-index: 2; display: flex; max-width: 600px; flex-direction: column; align-items: flex-start; }
 .eyebrow { display: block; color: var(--primary-light); font-size: 12px; letter-spacing: .04em; }
 .hero-copy .eyebrow { color: var(--foreground); font-size: 14px; font-weight: 500; letter-spacing: 1.4px; }

@@ -8,6 +8,7 @@ type HeroSlide = {
   image: string;
   imageAlt: string;
   secondaryImage: string;
+  cta: { label: string; href: string };
 };
 
 const slides: HeroSlide[] = [
@@ -19,6 +20,17 @@ const slides: HeroSlide[] = [
     image: "/images/nft-hero.webp",
     imageAlt: "Emerald Ape #042, obra de arte digital da Kurio",
     secondaryImage: "/images/nft-nomad.webp",
+    cta: { label: "EXPLORAR", href: "#catalogo" },
+  },
+  {
+    eyebrow: "Aprenda na Kurio",
+    title: "COMECE SUA JORNADA NO UNIVERSO DOS NFTS",
+    description:
+      "Guias, histórias e dicas para entender raridade, propriedade e segurança. Aprenda a colecionar arte digital com confiança.",
+    image: "/images/nft-noir.webp",
+    imageAlt: "Obra de arte digital em tons escuros da coleção Noir",
+    secondaryImage: "/images/nft-gold.webp",
+    cta: { label: "APRENDA", href: "#diario" },
   },
 ];
 
@@ -29,8 +41,9 @@ export function HeroCarousel() {
   const paused = isHovered || hasFocus;
 
   useEffect(() => {
-    if (slides.length < 2 || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (slides.length < 2 || paused) return;
 
+    // Com movimento reduzido a troca continua, mas sem animação de transição (regra global em responsive.css).
     const interval = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % slides.length);
     }, 5000);
@@ -67,7 +80,7 @@ export function HeroCarousel() {
             <h1>{slide.title}</h1>
             <p>{slide.description}</p>
             <Button asChild className="primary-button">
-              <a href="#catalogo">EXPLORAR</a>
+              <a href={slide.cta.href}>{slide.cta.label}</a>
             </Button>
             <div className="hero-dots" role="group" aria-label="Selecionar destaque">
               {slides.length > 1 ? (
@@ -92,7 +105,7 @@ export function HeroCarousel() {
               alt={slide.imageAlt}
               width="1254"
               height="1254"
-              fetchPriority={index === 0 ? "high" : "auto"}
+              {...(index === 0 ? { fetchpriority: "high" } : {})}
             />
             <img className="hero-art-secondary" src={slide.secondaryImage} alt="" />
           </div>

@@ -15,7 +15,7 @@ import { BlogSection } from "./components/BlogSection";
 import { CatalogToolbar } from "./components/CatalogToolbar";
 import { FilterSidebar, type FilterOption } from "./components/FilterSidebar";
 import { HeroCarousel } from "./components/HeroCarousel";
-import { NftCard } from "./components/NftCard";
+import { NftCard } from "@/features/marketplace/components/NftCard";
 import { Pagination } from "./components/Pagination";
 import { PromoSection } from "./components/PromoSection";
 

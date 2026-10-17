@@ -7,6 +7,7 @@ import { RelatedNfts } from "@/features/marketplace/components/RelatedNfts";
 import { SiteFooter } from "@/features/marketplace/components/SiteFooter";
 import { SiteHeader } from "@/features/marketplace/components/SiteHeader";
 import { useCartPanel } from "@/features/marketplace/hooks/useCartPanel";
+import { useFavorites } from "@/features/marketplace/hooks/useFavorites";
 import { CartItems } from "./components/CartItems";
 import { CartSummary } from "./components/CartSummary";
 
@@ -15,7 +16,8 @@ export default function CartPage() {
   const router = useRouter();
   const canGoBack = useCanGoBack();
   const [search, setSearch] = useState("");
-  const { cart, cartLoading, updateQuantity, removeFromCart, toast, dismissToast } = useCartPanel();
+  const { cart, cartLoading, addToCart, updateQuantity, removeFromCart, toast, dismissToast } = useCartPanel();
+  const { favorites, toggleFavorite } = useFavorites();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -77,7 +79,13 @@ export default function CartPage() {
               <CartItems items={cart} onQuantity={updateQuantity} onRemove={removeFromCart} />
               <CartSummary items={cart} />
             </div>
-            <RelatedNfts title="Colecionadores também viram" excludeIds={cart.map(({ nft }) => nft.id)} />
+            <RelatedNfts
+              title="Colecionadores também viram"
+              excludeIds={cart.map(({ nft }) => nft.id)}
+              favorites={favorites}
+              onFavorite={toggleFavorite}
+              onAdd={addToCart}
+            />
           </>
         )}
       </main>

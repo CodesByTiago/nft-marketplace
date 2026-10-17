@@ -12,7 +12,7 @@ test("os cards de 'Mais desta coleção' têm o mesmo tamanho", async ({ page })
     await page.waitForLoadState("networkidle");
     const sizes = await items.evaluateAll((els) =>
       els.map((el) => {
-        const art = el.querySelector(".related-art")!.getBoundingClientRect();
+        const art = el.querySelector(".nft-artwork")!.getBoundingClientRect();
         return [Math.round(el.getBoundingClientRect().width), Math.round(art.height)];
       }),
     );

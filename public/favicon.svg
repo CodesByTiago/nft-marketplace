@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kurio">
+  <rect width="64" height="64" rx="14" fill="#140d0a" />
+  <path d="M32 7 57 32 32 57 7 32Z" fill="none" stroke="#d28a4c" stroke-width="3" stroke-linejoin="round" />
+  <path d="M25 21v22M25 32l14-11M25 32l14 11" fill="none" stroke="#e89b55" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

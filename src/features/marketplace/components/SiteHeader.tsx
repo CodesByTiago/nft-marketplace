@@ -20,12 +20,22 @@ type SiteHeaderProps = {
   search: string;
   /** Item de menu fixo; sem ele, o ativo acompanha a seção visível da home. */
   activeId?: string;
+  /** Páginas de conteúdo (blog) não precisam de busca nem filtros. */
+  hideSearch?: boolean;
   onSearch: (value: string) => void;
   onSearchSubmit?: () => void;
   onFilters?: () => void;
 };
 
-export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, onFilters }: SiteHeaderProps) {
+export function SiteHeader({
+  cart,
+  search,
+  activeId,
+  hideSearch,
+  onSearch,
+  onSearchSubmit,
+  onFilters,
+}: SiteHeaderProps) {
   const scrollSection = useActiveSection(navIds);
   const activeSection = activeId ?? scrollSection;
   const offHome = activeId !== undefined;
@@ -63,18 +73,20 @@ export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, o
           })}
         </nav>
         <div className="header-actions">
-          <label className="header-search">
-            <img src="/images/icon-search.svg" alt="" width="20" height="20" />
-            <Input
-              value={search}
-              onChange={(event) => onSearch(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") onSearchSubmit?.();
-              }}
-              placeholder="Buscar NFTs"
-              aria-label="Buscar NFTs"
-            />
-          </label>
+          {!hideSearch && (
+            <label className="header-search">
+              <img src="/images/icon-search.svg" alt="" width="20" height="20" />
+              <Input
+                value={search}
+                onChange={(event) => onSearch(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") onSearchSubmit?.();
+                }}
+                placeholder="Buscar NFTs"
+                aria-label="Buscar NFTs"
+              />
+            </label>
+          )}
           <CartPreview items={cart} />
           {user ? (
             <Button className="login-button is-user" asChild>
@@ -96,25 +108,27 @@ export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, o
         </div>
       </div>
       <div className="header-divider page-width" aria-hidden="true" />
-      <div className="mobile-search-row page-width">
-        <label className="mobile-search">
-          <Search aria-hidden="true" />
-          <Input
-            value={search}
-            onChange={(event) => onSearch(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") onSearchSubmit?.();
-            }}
-            placeholder="Buscar NFTs"
-            aria-label="Buscar NFTs"
-          />
-        </label>
-        {onFilters && (
-          <Button variant="outline" size="icon-lg" aria-label="Filtros" onClick={onFilters}>
-            <SlidersHorizontal aria-hidden="true" />
-          </Button>
-        )}
-      </div>
+      {!hideSearch && (
+        <div className="mobile-search-row page-width">
+          <label className="mobile-search">
+            <Search aria-hidden="true" />
+            <Input
+              value={search}
+              onChange={(event) => onSearch(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") onSearchSubmit?.();
+              }}
+              placeholder="Buscar NFTs"
+              aria-label="Buscar NFTs"
+            />
+          </label>
+          {onFilters && (
+            <Button variant="outline" size="icon-lg" aria-label="Filtros" onClick={onFilters}>
+              <SlidersHorizontal aria-hidden="true" />
+            </Button>
+          )}
+        </div>
+      )}
     </header>
   );
 }
