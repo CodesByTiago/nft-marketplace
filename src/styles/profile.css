@@ -72,7 +72,7 @@
 
 @media (max-width: 640px) {
   .account-page .cart-main.page-width { padding: 32px 28px 48px; }
-  .account-layout { flex-direction: column; gap: 24px; }
+  .account-layout { flex-direction: column; align-items: stretch; gap: 24px; }
   .account-sidebar { width: 100%; padding: 0; background: transparent; }
   .account-sidebar h2 { display: none; }
   .account-sidebar ul { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; }
@@ -89,3 +89,9 @@
   .account-maintenance { padding: 32px 24px; }
   .account-save, .wallet-save { width: 100%; height: 56px; border-radius: 12px; }
 }
+.wishlist { gap: 16px; }
+.wishlist h2 { font-size: 20px; font-weight: 700; }
+.wishlist-count { color: var(--muted); font-size: 14px; }
+.wishlist-grid { margin-top: 0; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+@media (max-width: 767px) { .wishlist-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+.wishlist .account-maintenance { display: flex; flex-direction: column; border-radius: 16px; }

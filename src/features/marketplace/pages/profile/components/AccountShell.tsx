@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { Link, useCanGoBack, useNavigate, useRouter } from "@tanstack/react-router";
 import { useAuth, type SessionUser } from "@/core/auth/AuthContext";
 import { Button } from "@/shared/ui/button";
+import { MobileTabBar } from "@/features/marketplace/components/MobileTabBar";
 import { SiteFooter } from "@/features/marketplace/components/SiteFooter";
 import { SiteHeader } from "@/features/marketplace/components/SiteHeader";
 import { useCartPanel } from "@/features/marketplace/hooks/useCartPanel";
@@ -79,6 +80,7 @@ export function AccountShell({ section, title, children }: AccountShellProps) {
         )}
       </main>
       <SiteFooter />
+      <MobileTabBar cartCount={cart.length} current={section === "wishlist" ? "wishlist" : "profile"} />
     </div>
   );
 }

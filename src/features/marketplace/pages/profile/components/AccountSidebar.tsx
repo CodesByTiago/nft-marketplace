@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { Activity, Download, Heart, LogOut, MapPin, ShoppingCart, TriangleAlert, UserRound } from "lucide-react";
 
@@ -14,10 +15,18 @@ export const accountItems = [
 ] as const;
 
 export function AccountSidebar({ current, onLogout }: { current: AccountSection; onLogout: () => void }) {
+  const list = useRef<HTMLUListElement>(null);
+
+  // No mobile o menu rola na horizontal: traz o item ativo para a área visível.
+  useEffect(() => {
+    const active = list.current?.querySelector<HTMLElement>("[aria-current=page]");
+    if (list.current && active) list.current.scrollLeft = Math.max(0, active.offsetLeft - 28);
+  }, [current]);
+
   return (
     <aside className="account-sidebar" aria-label="Meu perfil">
       <h2>Meu perfil</h2>
-      <ul>
+      <ul ref={list}>
         {accountItems.map(({ label, icon: Icon, section, to }) => (
           <li key={section}>
             <Link to={to} activeOptions={{ exact: true }} aria-current={section === current ? "page" : undefined}>

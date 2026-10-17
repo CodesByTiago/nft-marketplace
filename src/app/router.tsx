@@ -99,10 +99,16 @@ const walletsRoute = createRoute({
   component: lazyRouteComponent(() => import("@/features/marketplace/pages/wallets/WalletsPage")),
 });
 
+const wishlistRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/perfil/lista-de-interesse",
+  beforeLoad: requireSession,
+  component: lazyRouteComponent(() => import("@/features/marketplace/pages/wishlist/WishlistPage")),
+});
+
 const maintenanceRoutes = (
   [
     ["/perfil/atividade", "activity"],
-    ["/perfil/lista-de-interesse", "wishlist"],
     ["/perfil/ofertas", "offers"],
     ["/perfil/arquivos-baixados", "downloads"],
     ["/perfil/suporte", "support"],
@@ -126,6 +132,7 @@ export const router = createRouter({
     paymentRoute,
     profileRoute,
     walletsRoute,
+    wishlistRoute,
     ...maintenanceRoutes,
   ]),
   defaultNotFoundComponent: () => <main className="not-found">Esta página não existe.</main>,

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
-import { BookOpen, Home, ScanLine, ShoppingBag, UserRound } from "lucide-react";
-import { useAuth } from "@/core/auth/AuthContext";
 import { Button } from "@/shared/ui/button";
+import { MobileTabBar } from "@/features/marketplace/components/MobileTabBar";
 import { SiteFooter } from "@/features/marketplace/components/SiteFooter";
 import { SiteHeader } from "@/features/marketplace/components/SiteHeader";
 import { articles, findArticle } from "@/features/marketplace/content/articles";
@@ -11,7 +10,6 @@ import { useCartPanel } from "@/features/marketplace/hooks/useCartPanel";
 export default function ArticlePage() {
   const { slug } = useParams({ from: "/diario/$slug" });
   const navigate = useNavigate();
-  const { user, openAuth } = useAuth();
   const [search, setSearch] = useState("");
   const { cart } = useCartPanel();
   const article = findArticle(slug);
@@ -128,44 +126,7 @@ export default function ArticlePage() {
       </main>
 
       <SiteFooter />
-      <nav className="mobile-tab-bar" aria-label="Navegação inferior">
-        <Link to="/" hash="inicio" aria-label="Início">
-          <Home aria-hidden="true" />
-        </Link>
-        <Button
-          variant="ghost"
-          size="icon-lg"
-          aria-label="Diário da Cunhagem"
-          aria-current="page"
-          onClick={() => void navigate({ to: "/", hash: "diario" })}
-        >
-          <BookOpen aria-hidden="true" />
-        </Button>
-        <Button
-          className="mobile-scan"
-          size="icon-lg"
-          aria-label="Ir para o catálogo"
-          onClick={() => void navigate({ to: "/", hash: "catalogo" })}
-        >
-          <ScanLine aria-hidden="true" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon-lg"
-          aria-label={`Abrir carrinho, ${cart.length} itens`}
-          onClick={() => void navigate({ to: "/carrinho" })}
-        >
-          <ShoppingBag aria-hidden="true" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon-lg"
-          aria-label={user ? `Meu perfil (${user.username})` : "Perfil"}
-          onClick={() => (user ? void navigate({ to: "/perfil" }) : openAuth("login"))}
-        >
-          <UserRound aria-hidden="true" />
-        </Button>
-      </nav>
+      <MobileTabBar cartCount={cart.length} />
     </div>
   );
 }

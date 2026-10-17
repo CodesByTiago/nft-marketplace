@@ -23,7 +23,6 @@ test("o menu lateral navega entre carteiras e seções em manutenção", async (
   await expect(page.getByRole("heading", { name: "Carteira principal" })).toBeVisible();
   for (const [name, path] of [
     ["Atividade", "atividade"],
-    ["Lista de interesse", "lista-de-interesse"],
     ["Ofertas", "ofertas"],
     ["Arquivos baixados", "arquivos-baixados"],
     ["Suporte", "suporte"],

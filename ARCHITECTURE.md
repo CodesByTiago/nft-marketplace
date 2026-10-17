@@ -119,7 +119,7 @@ Sessão expirada sob demanda: `POST /api/mock/session/expire`.
 ## Desvios do Figma e decisões de UX
 
 - Telas de perfil sem layout mobile seguem os padrões das demais.
-- Páginas do menu lateral sem design são placeholders de "em manutenção".
+- A lista de interesse reutiliza o `NftCard` e os favoritos do servidor; as demais páginas do menu lateral sem design são placeholders. No mobile, perfil, conta e artigos usam a barra inferior compartilhada (`MobileTabBar`); a home mantém a sua, com o filtro de favoritos de "em manutenção".
 - Mobile: botão X nos diálogos de login e cadastro.
 - Diário da Cunhagem: os 4 cards da home abrem `/diario/:slug` (rota lazy, textos em `features/marketplace/content/articles.ts`, artigo inexistente mostra aviso). O artigo tem barra lateral fixa com os outros três, sem busca/filtros no header, rodapé do site só no desktop e barra inferior no mobile. Os artistas do artigo 2 são fictícios.
 - Hero: carrossel automático (5 s) com dois destaques; com `prefers-reduced-motion` a troca continua, sem animação.
