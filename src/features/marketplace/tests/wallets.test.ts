@@ -1,12 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  emptyPrimary,
-  loadWallets,
-  saveWallets,
-  validatePrimary,
-  validateSecondary,
-  type PrimaryWallet,
-} from "../pages/wallets/wallet";
+import { emptyPrimary, validatePrimary, validateSecondary, type PrimaryWallet } from "../pages/wallets/wallet";
 
 const valid: PrimaryWallet = {
   displayName: "Nova",
@@ -39,13 +32,5 @@ describe("carteiras do colecionador", () => {
       address: "Informe um endereço 0x válido (42 caracteres).",
     });
     expect(validateSecondary({ nickname: "Reserva", network: "Polygon", address: valid.address })).toEqual({});
-  });
-
-  it("persiste por usuário e usa o e-mail da sessão como base", () => {
-    expect(loadWallets("u-1", "a@b.co")).toEqual({ primary: { ...emptyPrimary, email: "a@b.co" }, secondary: null });
-    const secondary = { nickname: "Reserva", network: "Polygon" as const, address: valid.address };
-    saveWallets("u-1", { primary: valid, secondary });
-    expect(loadWallets("u-1", "a@b.co")).toEqual({ primary: valid, secondary });
-    expect(loadWallets("u-2", "c@d.co").secondary).toBeNull();
   });
 });

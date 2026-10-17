@@ -1,21 +1,14 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { currentUserId } from "@/core/auth/session";
+import { currentUserId, readSession } from "@/core/auth/session";
 import { useRealtimeSocket } from "@/core/realtime/RealtimeContext";
 import { getNft } from "../services/nftService";
 import type { CartEntry, Nft, NftDetail, NftResults } from "../types/nft";
 import type { NftUpdatedEvent } from "../types/realtime";
 import { isNewerVersion, noticeFor, patchNft } from "../utils/realtime";
 import { pushNotice } from "./useNotices";
-import { cartKey } from "./useCart";
+import { cartKey, cartQueryKey } from "./useCart";
 import { readStoredValue, writeStored } from "./useStoredState";
-
-// O carrinho é do usuário da sessão atual.
-const cartStorageKey = () => cartKey(currentUserId());
-
-function readCart() {
-  return readStoredValue<CartEntry[]>(cartStorageKey(), []);
-}
 
 // Mantém catálogo, detalhe, carrinho e cotação coerentes com os eventos `nft.updated`
 // e reconcilia com a API REST sempre que a conexão é (re)estabelecida.
@@ -25,6 +18,16 @@ export function useNftUpdates() {
 
   useEffect(() => {
     if (!socket) return;
+
+    // Usuário autenticado: o carrinho vive no cache do servidor; visitante: no armazenamento local.
+    const readCart = () =>
+      readSession()
+        ? (queryClient.getQueryData<CartEntry[]>(cartQueryKey(currentUserId())) ?? [])
+        : readStoredValue<CartEntry[]>(cartKey("guest"), []);
+    const writeCart = (next: CartEntry[]) =>
+      readSession()
+        ? queryClient.setQueryData(cartQueryKey(currentUserId()), next)
+        : writeStored(cartKey("guest"), next);
     const versions = new Map<string, number>();
     const handled = new Set<string>();
 
@@ -47,8 +50,7 @@ export function useNftUpdates() {
       if (notice) pushNotice(notice);
 
       if (entry) {
-        writeStored(
-          cartStorageKey(),
+        writeCart(
           cart.map((candidate) =>
             candidate.nft.id === id ? { ...candidate, nft: patchNft(candidate.nft, event) } : candidate,
           ),
@@ -72,8 +74,7 @@ export function useNftUpdates() {
       if (!cart.length) return;
       const fresh = await Promise.allSettled(cart.map(({ nft }) => getNft(nft.id)));
       const current = readCart();
-      writeStored(
-        cartStorageKey(),
+      writeCart(
         current.map((entry) => {
           const result = fresh[cart.findIndex(({ nft }) => nft.id === entry.nft.id)];
           if (result?.status !== "fulfilled") return entry;

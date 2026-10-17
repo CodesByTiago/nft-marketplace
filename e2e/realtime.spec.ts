@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { nfts } from "../src/features/marketplace/mocks/data";
-import { control, demo, loginAs, maria, seedCartFor } from "./support";
+import { control, demo, loginAs, maria, seedCartFor, serverCartSize } from "./support";
 
 const nft = nfts[0];
 const wallet = "0xA91F3c5b7d9e1a2b4c6d8e0f1a3b5c7d9e0fE82C";
@@ -119,7 +119,7 @@ test("o pedido fica pendente e só é confirmado pelo evento order.updated", asy
   await waitForSocket(page);
   await control(page, "orders/settle", { key: await pendingKey(page) });
   await expect(page.getByRole("dialog", { name: "Seus NFTs agora estão na sua carteira" })).toBeVisible();
-  expect(await page.evaluate(() => localStorage.getItem("kurio-cart:u-demo"))).toBe("[]");
+  expect(await serverCartSize(page)).toBe(0);
 });
 
 test("queda da conexão com pedido pendente recupera o estado ao reconectar sem nova compra", async ({ page }) => {
@@ -175,8 +175,8 @@ test("pedido e eventos de um usuário não aparecem para outro", async ({ page }
   );
   expect(status).toEqual([200, 404, 401]);
 
-  await seedCartFor(page, [{ nft, quantity: 1 }], maria.id);
   await loginAs(page, maria);
+  await seedCartFor(page, [{ nft, quantity: 1 }], maria.id);
   await page.goto("/pagamento");
   await expect(page.getByRole("button", { name: "Confirmar compra" })).toBeEnabled();
   await waitForSocket(page);

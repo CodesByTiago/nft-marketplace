@@ -54,12 +54,12 @@ test("valida e salva a carteira principal e a secundária", async ({ page }) => 
   await page.getByRole("button", { name: "Salvar carteira", exact: true }).click();
   await expect(page.locator(".account-saved")).toHaveText("Carteira principal salva.");
 
-  await page.getByLabel("Igual à carteira principal").check();
+  await page.getByLabel("Igual à carteira principal").click();
   await expect(page.getByTestId("secondary-summary")).toContainText("Principal · Ethereum");
   await page.reload();
   await expect(page.locator("#wallet-displayName")).toHaveValue("Nova");
   await expect(page.getByTestId("secondary-summary")).toBeVisible();
-  await page.getByLabel("Igual à carteira principal").uncheck();
+  await page.getByLabel("Igual à carteira principal").click();
   await expect(page.getByText("Você ainda não adicionou uma carteira secundária.")).toBeVisible();
 });
 

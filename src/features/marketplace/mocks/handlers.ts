@@ -6,6 +6,8 @@ import type { OrderRequest } from "../types/payment";
 import type { HomeTab, SortOption } from "../types/search";
 import { nfts } from "./data";
 import { buildNftDetail } from "./detail";
+import { accountHandlers } from "./account";
+import { cartHandlers } from "./cart";
 import { favoritesHandlers } from "./favorites";
 import { buildCartQuote } from "./cartQuote";
 import { placeOrder } from "./orders";
@@ -21,6 +23,8 @@ function countBy(list: Nft[], key: "category" | "network") {
 export const handlers = [
   ...realtimeHandlers,
   ...favoritesHandlers,
+  ...accountHandlers,
+  ...cartHandlers,
   http.post("/api/orders", async ({ request }) => {
     const body = (await request.json()) as OrderRequest;
     const auth = await authenticate(request);

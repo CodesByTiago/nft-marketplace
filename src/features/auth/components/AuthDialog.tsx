@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { useRef } from "react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 import type { AuthMode } from "@/core/auth/AuthContext";
 import type { Session } from "@/core/auth/session";
@@ -36,9 +37,22 @@ const copy = {
 
 export function AuthDialog({ mode, notice, onModeChange, onClose, onSuccess }: AuthDialogProps) {
   const current = copy[mode ?? "login"];
+  // O diálogo é controlado (sem Trigger): guarda quem o abriu para devolver o foco ao fechar.
+  const opener = useRef<HTMLElement | null>(null);
   return (
     <Dialog open={mode !== null} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent showCloseButton={false} className="auth-dialog" data-mode={mode ?? "login"}>
+      <DialogContent
+        showCloseButton={false}
+        className="auth-dialog"
+        data-mode={mode ?? "login"}
+        onOpenAutoFocus={() => {
+          opener.current = document.activeElement as HTMLElement | null;
+        }}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          opener.current?.focus();
+        }}
+      >
         <DialogPrimitive.Close className="auth-close" aria-label="Fechar">
           <X aria-hidden="true" />
         </DialogPrimitive.Close>

@@ -17,7 +17,7 @@ export function PromoSection() {
       {promotions.map(({ className, title, description }) => (
         <article className={`promo-card ${className}`} key={className}>
           <img
-            src={className === "promo-genesis" ? "/images/nft-hero.png" : "/images/nft-noir.png"}
+            src={className === "promo-genesis" ? "/images/nft-hero.webp" : "/images/nft-noir.webp"}
             alt=""
             loading="lazy"
           />

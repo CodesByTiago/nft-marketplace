@@ -1,11 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  emptyPasswordChange,
-  loadProfile,
-  saveProfile,
-  validateAccount,
-  type AccountProfile,
-} from "../pages/profile/accountProfile";
+import { emptyPasswordChange, validateAccount, type AccountProfile } from "../pages/profile/accountProfile";
 
 const valid: AccountProfile = {
   displayName: "Nova",
@@ -38,13 +32,5 @@ describe("perfil do colecionador", () => {
       /diferente/,
     );
     expect(validateAccount(valid, { current: "kurio1234", next: "novasenha1", confirm: "novasenha1" })).toEqual({});
-  });
-
-  it("persiste por usuário e usa a sessão como base", () => {
-    const base = { username: "u", email: "u@k.io" };
-    expect(loadProfile("u-1", base).displayName).toBe("");
-    saveProfile("u-1", valid);
-    expect(loadProfile("u-1", base)).toEqual(valid);
-    expect(loadProfile("u-2", base).username).toBe("u");
   });
 });

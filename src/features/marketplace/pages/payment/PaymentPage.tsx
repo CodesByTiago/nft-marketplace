@@ -24,7 +24,7 @@ function PaymentContent() {
   const canGoBack = useCanGoBack();
   const isMobile = useMediaQuery("(max-width: 640px)");
   const { coupon } = useSearch({ strict: false }) as { coupon?: string };
-  const { cart, removeItems } = useCartPanel();
+  const { cart, cartLoading, removeItems } = useCartPanel();
   const { order, submitting, error, submit, closeReceipt } = useCheckout(removeItems);
   const [search, setSearch] = useState("");
   const [profile, setProfile] = useState<Profile>(emptyProfile);
@@ -133,7 +133,11 @@ function PaymentContent() {
           <h1>Pagamento com carteira</h1>
         </header>
 
-        {cart.length === 0 ? (
+        {cartLoading ? (
+          <p className="catalog-message" role="status">
+            Carregando seu carrinho…
+          </p>
+        ) : cart.length === 0 ? (
           <div className="catalog-message cart-empty">
             <ShoppingBag aria-hidden="true" />
             <h1>Não há itens para pagar</h1>

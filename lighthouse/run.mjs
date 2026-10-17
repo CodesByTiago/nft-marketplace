@@ -1,6 +1,11 @@
-// Auditoria Lighthouse: build otimizado + preview com mocks ligados, 3 medições por página/perfil (mediana).
+// Auditoria Lighthouse: build otimizado servido com gzip (como a Vercel) e mocks ligados, 3 medições por página/perfil (mediana).
 // Uso: npm run lighthouse   (relatórios HTML/JSON em lighthouse/reports)
 import { spawn } from "node:child_process";
+import { createReadStream, existsSync, statSync } from "node:fs";
+import { createServer } from "node:http";
+import { extname, join, normalize } from "node:path";
+import { fileURLToPath } from "node:url";
+import { createGzip } from "node:zlib";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { launch } from "chrome-launcher";
 import lighthouse from "lighthouse";
@@ -37,10 +42,38 @@ async function waitForServer() {
 }
 
 await run(["run", "build"]);
-const preview = spawn(npm, ["run", "preview", "--", "--host", "127.0.0.1", "--port", String(PORT), "--strictPort"], {
-  stdio: "ignore",
-  shell: process.platform === "win32",
-});
+// `vite preview` não comprime; a hospedagem de produção sim. Este servidor reproduz isso (gzip + fallback de SPA).
+const dist = fileURLToPath(new URL("../dist/", import.meta.url));
+const types = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "text/javascript",
+  ".css": "text/css",
+  ".svg": "image/svg+xml",
+  ".json": "application/json",
+  ".webp": "image/webp",
+  ".png": "image/png",
+  ".woff2": "font/woff2",
+};
+const compressible = new Set([".html", ".js", ".css", ".svg", ".json"]);
+const preview = createServer((request, response) => {
+  const pathname = decodeURIComponent(new URL(request.url, BASE).pathname);
+  let file = join(dist, normalize(pathname));
+  if (!file.startsWith(dist) || !existsSync(file) || statSync(file).isDirectory()) file = join(dist, "index.html");
+  const extension = extname(file);
+  const headers = {
+    "Content-Type": types[extension] ?? "application/octet-stream",
+    "Cache-Control":
+      file.includes("assets") || file.includes("images") ? "public, max-age=31536000, immutable" : "no-cache",
+  };
+  const stream = createReadStream(file);
+  if (compressible.has(extension) && String(request.headers["accept-encoding"]).includes("gzip")) {
+    response.writeHead(200, { ...headers, "Content-Encoding": "gzip" });
+    stream.pipe(createGzip()).pipe(response);
+  } else {
+    response.writeHead(200, headers);
+    stream.pipe(response);
+  }
+}).listen(PORT, "127.0.0.1");
 const chrome = await launch({ chromeFlags: ["--headless=new", "--no-sandbox"] });
 const summary = [];
 
@@ -79,5 +112,5 @@ try {
   if (below.length) console.warn(`${below.length} categoria(s) abaixo da meta. Ver lighthouse/reports/summary.json.`);
 } finally {
   await chrome.kill();
-  preview.kill();
+  preview.close();
 }

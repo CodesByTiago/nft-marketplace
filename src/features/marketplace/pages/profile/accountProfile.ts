@@ -33,18 +33,3 @@ export function validateAccount(profile: AccountProfile, password: PasswordChang
   }
   return errors;
 }
-
-const storageKey = (userId: string) => `kurio-profile:${userId}`;
-
-export function loadProfile(userId: string, fallback: Pick<AccountProfile, "username" | "email">): AccountProfile {
-  const base: AccountProfile = { displayName: "", walletNickname: "", ensName: "", avatar: "", ...fallback };
-  try {
-    return { ...base, ...(JSON.parse(localStorage.getItem(storageKey(userId)) ?? "{}") as Partial<AccountProfile>) };
-  } catch {
-    return base;
-  }
-}
-
-export function saveProfile(userId: string, profile: AccountProfile) {
-  localStorage.setItem(storageKey(userId), JSON.stringify(profile));
-}

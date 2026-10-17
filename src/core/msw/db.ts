@@ -58,6 +58,14 @@ export async function addUser(user: DbUser) {
   persist(db);
 }
 
+export async function updatePassword(userId: string, passwordHash: string) {
+  const db = await load();
+  const user = db.users.find((candidate) => candidate.id === userId);
+  if (!user) return;
+  user.passwordHash = passwordHash;
+  persist(db);
+}
+
 export const publicUser = ({ id, username, email }: DbUser) => ({ id, username, email });
 
 export async function createSession(user: DbUser) {

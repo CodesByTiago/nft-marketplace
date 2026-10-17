@@ -15,7 +15,7 @@ export default function CartPage() {
   const router = useRouter();
   const canGoBack = useCanGoBack();
   const [search, setSearch] = useState("");
-  const { cart, updateQuantity, removeFromCart, toast, dismissToast } = useCartPanel();
+  const { cart, cartLoading, updateQuantity, removeFromCart, toast, dismissToast } = useCartPanel();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -58,7 +58,11 @@ export default function CartPage() {
           <h1>Carrinho de NFTs</h1>
         </header>
 
-        {cart.length === 0 ? (
+        {cartLoading ? (
+          <p className="catalog-message" role="status">
+            Carregando seu carrinho…
+          </p>
+        ) : cart.length === 0 ? (
           <div className="catalog-message cart-empty">
             <ShoppingBag aria-hidden="true" />
             <h1>Seu carrinho está vazio</h1>

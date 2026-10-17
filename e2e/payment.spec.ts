@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { nfts } from "../src/features/marketplace/mocks/data";
-import { demo, loginAs, seedCartFor } from "./support";
+import { demo, loginAs, seedCartFor, serverCartSize } from "./support";
 
 const seeded = [
   { nft: nfts[0], quantity: 2 },
@@ -87,7 +87,7 @@ test("confirma a compra, mostra o recibo e remove só os itens comprados", async
     "href",
     /^https:\/\/etherscan\.io\/tx\/0x[0-9a-f]{64}$/,
   );
-  expect(await page.evaluate(() => localStorage.getItem("kurio-cart:u-demo"))).toBe("[]");
+  expect(await serverCartSize(page)).toBe(0);
 
   // O recibo sobrevive a um refresh até ser fechado.
   await page.reload();
@@ -107,7 +107,7 @@ test("compra recusada preserva os itens e permite tentar com outra carteira", as
   await page.getByRole("button", { name: "Confirmar compra" }).click();
   await expect(page.getByRole("alert").filter({ hasText: "recusada na carteira" })).toBeVisible();
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("kurio-cart:u-demo") ?? "[]").length)).toBe(3);
+  expect(await serverCartSize(page)).toBe(3);
 
   await page.getByRole("radio", { name: "MetaMask" }).check();
   await page.getByRole("button", { name: "Confirmar compra" }).click();

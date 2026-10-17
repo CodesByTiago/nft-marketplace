@@ -78,7 +78,7 @@ export function SiteHeader({ cart, search, activeId, onSearch, onSearchSubmit, o
           <CartPreview items={cart} />
           {user ? (
             <Button className="login-button is-user" asChild>
-              <Link to="/perfil" aria-label={`Meu perfil (${user.username})`}>
+              <Link to="/perfil" aria-label={`${user.username}, meu perfil`}>
                 <span className="login-icon" aria-hidden="true">
                   <img src="/images/icon-login.svg" alt="" width="18" height="17" />
                 </span>

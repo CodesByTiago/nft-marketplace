@@ -3,25 +3,25 @@ const articles = [
     date: "12 de setembro  |  Leitura de 6 min",
     title: "Como funciona a propriedade de NFTs",
     description: "Aprenda a colecionar, negociar e verificar ativos digitais.",
-    image: "/images/nft-noir.png",
+    image: "/images/nft-noir.webp",
   },
   {
     date: "13 de setembro  |  Leitura de 2 min",
     title: "10 artistas digitais para acompanhar",
     description: "Conheça criadores que moldam a cultura digital.",
-    image: "/images/nft-hero.png",
+    image: "/images/nft-hero.webp",
   },
   {
     date: "15 de setembro  |  Leitura de 3 min",
     title: "Raridade, atributos e procedência",
     description: "Entenda raridade, procedência, direitos autorais e utilidade.",
-    image: "/images/nft-nomad.png",
+    image: "/images/nft-nomad.webp",
   },
   {
     date: "15 de setembro  |  Leitura de 2 min",
     title: "Como proteger sua carteira",
     description: "Proteja sua carteira, seus ativos e sua identidade.",
-    image: "/images/nft-gold.png",
+    image: "/images/nft-gold.webp",
   },
 ];
 

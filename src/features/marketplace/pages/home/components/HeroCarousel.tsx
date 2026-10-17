@@ -16,9 +16,9 @@ const slides: HeroSlide[] = [
     title: "SEJA DONO DO FUTURO DA ARTE DIGITAL",
     description:
       "Descubra NFTs selecionados de criadores emergentes e consagrados. Colecione arte digital rara, apoie artistas e tenha uma parte da cultura da internet.",
-    image: "/images/nft-hero.png",
+    image: "/images/nft-hero.webp",
     imageAlt: "Emerald Ape #042, obra de arte digital da Kurio",
-    secondaryImage: "/images/nft-nomad.png",
+    secondaryImage: "/images/nft-nomad.webp",
   },
 ];
 
@@ -87,7 +87,13 @@ export function HeroCarousel() {
             </div>
           </div>
           <div className="hero-art">
-            <img src={slide.image} alt={slide.imageAlt} />
+            <img
+              src={slide.image}
+              alt={slide.imageAlt}
+              width="1254"
+              height="1254"
+              fetchPriority={index === 0 ? "high" : "auto"}
+            />
             <img className="hero-art-secondary" src={slide.secondaryImage} alt="" />
           </div>
         </div>

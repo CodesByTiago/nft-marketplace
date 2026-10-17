@@ -66,8 +66,8 @@ test("falha ao favoritar desfaz a atualização otimista", async ({ page }) => {
 });
 
 test("sessão expirada limpa a sessão e pede novo login sem perder o carrinho", async ({ page }) => {
-  await seedCartFor(page, [{ nft, quantity: 1 }], demo.id);
   await loginAs(page);
+  await seedCartFor(page, [{ nft, quantity: 1 }], demo.id);
   await openApp(page);
   await control(page, "session/expire");
   await page.reload();
@@ -82,8 +82,8 @@ test("sessão expirada limpa a sessão e pede novo login sem perder o carrinho",
 });
 
 test("sessão expirada durante o checkout pede login e mantém o carrinho", async ({ page }) => {
-  await seedCartFor(page, [{ nft, quantity: 1 }], demo.id);
   await loginAs(page);
+  await seedCartFor(page, [{ nft, quantity: 1 }], demo.id);
   await page.goto("/pagamento");
   await expect(page.locator(".pay-total")).toBeVisible();
   await control(page, "session/expire");

@@ -30,14 +30,37 @@ export async function loginAs(page: Page, account: Account = demo) {
   return session;
 }
 
-/** Carrinho inicial, gravado na chave do usuário (ou do visitante). */
-export async function seedCartFor(page: Page, entries: unknown[], userId = "guest") {
-  await page.addInitScript(
-    ([key, value]) => {
-      if (!localStorage.getItem(key as string)) localStorage.setItem(key as string, JSON.stringify(value));
-    },
-    [`kurio-cart:${userId}`, entries] as const,
-  );
+/** Carrinho inicial: do visitante no localStorage; de uma conta, no servidor (exige `loginAs` antes). */
+export async function seedCartFor(page: Page, entries: { nft: { id: string }; quantity: number }[], userId = "guest") {
+  if (userId === "guest") {
+    await page.addInitScript((value) => {
+      if (!localStorage.getItem("kurio-cart:guest")) localStorage.setItem("kurio-cart:guest", JSON.stringify(value));
+    }, entries);
+    return;
+  }
+  const failed = await page.evaluate(async (items) => {
+    const { token } = JSON.parse(localStorage.getItem("kurio-session") ?? "{}") as { token?: string };
+    const statuses = await Promise.all(
+      items.map(async ({ nft, quantity }) => {
+        const response = await fetch(`/api/cart/items/${nft.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ quantity }),
+        });
+        return response.status;
+      }),
+    );
+    return statuses.filter((status) => status !== 200);
+  }, entries);
+  expect(failed).toEqual([]);
+}
+/** Linhas do carrinho da conta logada, lidas do servidor. */
+export async function serverCartSize(page: Page) {
+  return page.evaluate(async () => {
+    const { token } = JSON.parse(localStorage.getItem("kurio-session") ?? "{}") as { token?: string };
+    const response = await fetch("/api/cart", { headers: { Authorization: `Bearer ${token}` } });
+    return ((await response.json()) as { items: unknown[] }).items.length;
+  });
 }
 
 /** Controles do cenário: falam com o backend simulado (MSW) pela rede, como um operador faria. */

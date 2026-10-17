@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { loginAs as login } from "./support";
+import { loginAs as login, maria } from "./support";
 
 async function settle(page: Page) {
   await page.waitForLoadState("networkidle");
@@ -40,6 +40,27 @@ test("valida, salva e mantém os dados do perfil", async ({ page }) => {
   await page.reload();
   await expect(page.locator("#account-displayName")).toHaveValue("Nova Colecionadora");
   await expect(page.locator("#account-current")).toHaveValue("");
+});
+
+test("o servidor recusa a senha atual incorreta e o perfil não aparece para outra conta", async ({ page }) => {
+  await login(page);
+  await page.goto("/perfil");
+  await page.locator("#account-displayName").fill("Nova Colecionadora");
+  await page.locator("#account-ensName").fill("nova");
+  await page.locator("#account-walletNickname").fill("Principal");
+  await page.locator("#account-current").fill("errada123");
+  await page.locator("#account-next").fill("12345678");
+  await page.locator("#account-confirm").fill("12345678");
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.locator("#account-current-error")).toHaveText("Senha atual incorreta.");
+  await page.locator("#account-current").fill("kurio1234");
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.locator(".account-saved")).toBeVisible();
+
+  await login(page, maria);
+  await page.goto("/perfil");
+  await expect(page.locator("#account-username")).toHaveValue("maria");
+  await expect(page.locator("#account-displayName")).toHaveValue("");
 });
 
 test("troca e remove o avatar", async ({ page }) => {

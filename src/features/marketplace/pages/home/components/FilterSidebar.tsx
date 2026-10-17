@@ -158,7 +158,7 @@ export function FilterSidebar({
       <article className="featured-nft-banner">
         <h2>NFT EM DESTAQUE</h2>
         <p>OFERTA LIMITADA</p>
-        <img src="/images/nft-nomad.png" alt="Sage Nomad, macaco usando chapéu e moletom roxo" loading="lazy" />
+        <img src="/images/nft-nomad.webp" alt="Sage Nomad, macaco usando chapéu e moletom roxo" loading="lazy" />
       </article>
     </aside>
   );

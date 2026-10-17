@@ -61,19 +61,3 @@ export function validateSecondary(wallet: SecondaryWallet): SecondaryErrors {
   if (!isAddress(wallet.address)) errors.address = "Informe um endereço 0x válido (42 caracteres).";
   return errors;
 }
-
-const storageKey = (userId: string) => `kurio-wallets:${userId}`;
-
-export function loadWallets(userId: string, email: string): WalletsData {
-  const base: WalletsData = { primary: { ...emptyPrimary, email }, secondary: null };
-  try {
-    const stored = JSON.parse(localStorage.getItem(storageKey(userId)) ?? "null") as Partial<WalletsData> | null;
-    return { primary: { ...base.primary, ...stored?.primary }, secondary: stored?.secondary ?? null };
-  } catch {
-    return base;
-  }
-}
-
-export function saveWallets(userId: string, data: WalletsData) {
-  localStorage.setItem(storageKey(userId), JSON.stringify(data));
-}

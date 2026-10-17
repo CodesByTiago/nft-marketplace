@@ -28,6 +28,14 @@ Camadas (`app → features → shared → core`, ver `AGENTS.md`):
 | GET    | `/api/favorites`           | sim  | `{ ids }` do usuário.                                        |
 | PUT    | `/api/favorites/:id`       | sim  | Favorita (idempotente).                                      |
 | DELETE | `/api/favorites/:id`       | sim  | Remove.                                                      |
+| GET    | `/api/profile`           | sim  | Perfil do usuário (parte dos dados da conta).                |
+| PUT    | `/api/profile`           | sim  | Salva; valida e confere a senha atual no servidor (422).     |
+| GET    | `/api/wallets`           | sim  | Carteira principal e secundária do usuário.                  |
+| PUT    | `/api/wallets`           | sim  | Salva; valida os campos (422 por campo).                     |
+| GET    | `/api/cart`              | sim  | Carrinho do usuário, hidratado com o catálogo.               |
+| PUT    | `/api/cart/items/:id`    | sim  | Define a quantidade (limitada à edição).                     |
+| DELETE | `/api/cart/items?ids=`   | sim  | Remove itens.                                                |
+| POST   | `/api/cart/merge`        | sim  | Mescla o carrinho de visitante ao da conta.                  |
 | POST   | `/api/orders`              | sim  | Cria pedido `pending` (202), idempotente por `key`.          |
 | GET    | `/api/orders/:key`         | sim  | Estado do pedido; pedido de outro usuário responde 404.     |
 
@@ -46,13 +54,14 @@ Erros de sessão: `401` com `code: "session-expired"` (token existente e vencido
 
 O banco simulado (`localStorage: kurio-mock-db`) particiona dados por coleção e usuário (`readData/writeData`), sempre a
 partir do usuário autenticado. Pedidos são filtrados por dono; eventos `order.updated` só vão aos sockets do dono.
-Favoritos e pedidos vêm do servidor; carrinho, perfil e carteiras ficam em `localStorage` por usuário
-(`kurio-cart:<id>`, `kurio-profile:<id>`, `kurio-wallets:<id>`).
+Favoritos, carrinho, perfil, carteiras e pedidos vêm do servidor, sempre do usuário autenticado; só o carrinho de visitante
+fica no navegador.
 
 ## Carrinho
 
-Chave por usuário; visitantes usam `kurio-cart:guest`. Ao entrar, o carrinho de visitante é mesclado ao da conta (soma
-limitada à edição) e descartado. A cotação é sempre recalculada pelo servidor (`/api/cart/quote`).
+Com sessão, o carrinho vive no servidor (`GET/PUT/DELETE /api/cart`, chave de cache `["private","cart",id]`, update otimista com
+rollback). Visitantes usam `kurio-cart:guest`. Ao entrar, o carrinho de visitante é mesclado ao da conta (soma
+limitada à edição, `POST /api/cart/merge`) e descartado. A cotação é sempre recalculada pelo servidor (`/api/cart/quote`).
 
 ## Cache, retries e latência
 

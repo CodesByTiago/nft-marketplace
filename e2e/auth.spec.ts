@@ -58,7 +58,7 @@ test.describe("desktop", () => {
     await page.getByRole("dialog").locator("button[type=submit]").click();
     await expect(page.getByRole("dialog")).toBeHidden();
     await page.reload();
-    const profile = page.getByRole("link", { name: /Meu perfil \(colecionador\)/ }).first();
+    const profile = page.getByRole("link", { name: /colecionador, meu perfil/ }).first();
     await expect(profile).toBeVisible();
     await profile.click();
     await page.getByRole("button", { name: "Sair", exact: true }).click();
@@ -79,7 +79,7 @@ test.describe("desktop", () => {
     await dialog.locator("#auth-register-password").fill("12345678");
     await dialog.locator("#auth-register-confirm").fill("12345678");
     await dialog.locator("button[type=submit]").click();
-    await expect(page.getByRole("link", { name: /Meu perfil \(nova\)/ }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /nova, meu perfil/ }).first()).toBeVisible();
   });
 });
 
