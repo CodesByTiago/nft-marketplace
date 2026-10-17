@@ -8,7 +8,11 @@ async function openStableHome(page: Page) {
       "html { scrollbar-width: none !important; } html::-webkit-scrollbar { display: none !important; width: 0 !important; }",
   });
   await expect(page.locator(".nft-card")).toHaveCount(9);
+  // O carrossel troca sozinho a cada 5 s: fixa o primeiro destaque para a captura ser determinística.
+  await page.getByRole("region", { name: "Destaques", exact: true }).hover();
+  await expect(page.getByRole("group", { name: "Slide 1 de 2" })).toBeVisible();
   await page.evaluate(async () => {
+    await document.fonts.load("16px 'Roboto Mono Variable'");
     await document.fonts.ready;
     const images = Array.from(document.images);
     images.forEach((image) => {

@@ -145,3 +145,28 @@ for (const { name, width, height } of widths) {
     });
   });
 }
+
+test.describe("diálogo de login no mobile", () => {
+  test.use({ viewport: { width: 412, height: 839 } });
+
+  test("login e cadastro ocupam a tela inteira, sem deslocamento", async ({ page }) => {
+    await openApp(page, "/");
+    await page
+      .getByRole("button", { name: /Entrar|Perfil/ })
+      .first()
+      .click();
+    const dialog = page.locator(".auth-dialog");
+    await expect(dialog).toBeVisible();
+    for (const mode of ["login", "register"]) {
+      if (mode === "register") await page.getByRole("button", { name: /Crie uma conta/ }).click();
+      await expect
+        .poll(() =>
+          dialog.evaluate((node) => {
+            const r = node.getBoundingClientRect();
+            return [r.left, r.top, r.width, r.height];
+          }),
+        )
+        .toEqual([0, 0, 412, 839]);
+    }
+  });
+});

@@ -80,7 +80,7 @@
   .account-sidebar li [aria-current="page"] { border-color: var(--primary-kurio); background: var(--surface); }
   .account-logout { width: auto; align-self: flex-start; margin-top: 4px; padding-inline: 14px; border: 1px solid var(--border-kurio); border-radius: 20px; }
   .account-grid { grid-template-columns: 1fr; }
-  .account-field input:not([type="file"]), .account-field select { height: 50px; border-radius: 10px; }
+  .account-field input:not([type="file"]), .account-field select { height: 50px; border-radius: 10px; font-size: 16px; }
   .account-select { width: 92px; }
   .account-select svg { top: 17px; }
   .account-password button { height: 50px; }

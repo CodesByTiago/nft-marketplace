@@ -77,7 +77,8 @@
 
 @media (max-width: 640px) {
   .auth-dialog {
-    top: 0; left: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; translate: none; transform: none;
+    inset: 0; width: auto; max-width: none; height: auto; max-height: none; --tw-translate-x: 0; --tw-translate-y: 0; transform: none; animation: none;
+    overflow-x: hidden; overscroll-behavior: contain;
     justify-content: flex-start; gap: 40px; border-radius: 0; background: var(--bg); padding: 80px 28px 24px;
   }
   .auth-bar, .auth-tabs, .auth-text { display: none; }
@@ -86,7 +87,8 @@
   .auth-mobile-title { display: block; margin: 0; font-size: 20px; font-weight: 700; }
   .auth-form { gap: 0; padding: 0; }
   .auth-fields { gap: 16px; }
-  .auth-field input { height: 50px; border-radius: 10px; }
+  /* 16px evita o zoom automático ao focar o campo em celulares, que desloca o diálogo fixo. */
+  .auth-field input { height: 50px; border-radius: 10px; font-size: 16px; }
   .auth-submit { height: 60px; margin-top: 32px; border-radius: 12px; }
   .auth-social { gap: 16px; padding-top: 32px; }
   .auth-divider { gap: 10px; }
