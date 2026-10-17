@@ -58,6 +58,23 @@ Compra: `POST /api/orders` responde `202` com o pedido `pending` (idempotente po
 
 Controles de cenário (rede, não UI), usados pelos E2E em `e2e/realtime.spec.ts`: `POST /api/mock/nft-update` (`nftId`, `price`, `available`, `version`, `eventId`), `/api/mock/orders/settle` (`key`), `/api/mock/disconnect`, `/api/mock/config` (`orderSettleMs`) e `/api/mock/reset`. O identificador do usuário viaja no header `X-User-Id`.
 
+### Como testar `nft.updated` e `order.updated` manualmente
+
+O backend simulado (MSW) roda no navegador: execute os comandos no **console do DevTools da própria aba do app** (não funcionam via `curl` nem de outra aba). Se o Chrome bloquear a colagem, digite `allow pasting` e Enter, ou use as versões curtas abaixo.
+
+- **`nft.updated`** (preço/disponibilidade ao vivo no catálogo, detalhe e carrinho). Use um `nftId` existente, por exemplo `emerald-ape-042`:
+  ```js
+  fetch("/api/mock/nft-update",{method:"POST",body:'{"nftId":"emerald-ape-042","price":"9.99"}'})
+  fetch("/api/mock/nft-update",{method:"POST",body:'{"nftId":"emerald-ape-042","available":false}'})
+  ```
+- **`order.updated`** (confirmação/recusa do pedido):
+  1. opcional, para dar tempo de ver o estado pendente: `fetch("/api/mock/config",{method:"POST",body:'{"orderSettleMs":60000}'})`;
+  2. finalize a compra logado; a chave de idempotência está no `POST /api/orders` (aba Network);
+  3. liquide na hora: `fetch("/api/mock/orders/settle",{method:"POST",body:'{"key":"<chave>"}'})`. Sem o passo 1, o pedido liquida sozinho após o tempo padrão.
+- **Reconexão:** `fetch("/api/mock/disconnect",{method:"POST",body:"{}"})` derruba o socket; o cliente reconecta e reconcilia pela API.
+- **Resetar tudo:** `fetch("/api/mock/reset",{method:"POST",body:"{}"})`.
+- Eventos antigos/duplicados: reenvie `nft-update` com `version` menor ou o mesmo `eventId`; a interface não regride.
+
 ## Lighthouse
 
 Auditoria do build otimizado (`vite build` servido com gzip, como a hospedagem de produção; mocks ligados) com Lighthouse 13.5.0, Chrome headless, 3 medições por página e perfil (mediana). Config e script em `lighthouse/run.mjs`; relatórios HTML/JSON em `lighthouse/reports/`. Metas: Performance ≥ 90, Acessibilidade ≥ 95, Boas práticas ≥ 95, SEO ≥ 90.
