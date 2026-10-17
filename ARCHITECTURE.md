@@ -50,6 +50,14 @@ Erros de sessão: `401` com `code: "session-expired"` (token existente e vencido
 - Ao abrir a aplicação com sessão guardada, `GET /api/session` valida o token.
 - Logout chama o servidor, limpa a sessão e o cache privado e o socket reconecta como visitante.
 
+## Guarda de rotas
+
+`/pagamento`, `/perfil`, `/perfil/carteiras` e as páginas em manutenção usam `beforeLoad` no TanStack Router: sem sessão, redirecionam para `/entrar?redirect=<origem>` (só caminhos internos são aceitos; o resto cai em `/`). A página `/entrar` abre o diálogo de login e, ao autenticar, volta à origem preservando a query (ex.: cupom). Fechar o diálogo mantém a página, com opção de tentar de novo. As gates dentro de `AccountShell` e `PaymentPage` continuam para o caso de a sessão expirar com a página aberta.
+
+## Carregamento e movimento reduzido
+
+Catálogo, detalhe e resumo do carrinho/pagamento têm skeletons (`aria-busy`/`role="status"`) com shimmer, desligado em `prefers-reduced-motion`. Os E2E (`loading-states`, `route-guard`) cobrem skeletons em rede lenta, falha com retry, ausência de overflow horizontal em 390/768/1440 e a idempotência de `POST /api/orders`.
+
 ## Dados privados e isolamento
 
 O banco simulado (`localStorage: kurio-mock-db`) particiona dados por coleção e usuário (`readData/writeData`), sempre a
@@ -105,7 +113,7 @@ Sessão expirada sob demanda: `POST /api/mock/session/expire`.
 - Mock em memória/`localStorage`: não há concorrência real nem persistência entre navegadores.
 - Hash SHA-256 sem sal por usuário é suficiente só para a simulação; um backend real deve usar Argon2/bcrypt.
 - Um namespace Socket.IO, sem rooms nem long-polling no mock.
-- Perfil, carteiras e carrinho ainda não usam REST.
+- O 409 `idempotency-conflict` está coberto no nível da API (E2E), e a UI o trata como erro genérico.
 - Performance no Lighthouse limitada pelo bundle do MSW (ver README).
 
 ## Desvios do Figma e decisões de UX

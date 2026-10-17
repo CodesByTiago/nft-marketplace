@@ -14,9 +14,10 @@ async function settle(page: Page) {
   await page.waitForTimeout(500);
 }
 
-test("sem sessão pede login para ver o perfil", async ({ page }) => {
+test("sem sessão redireciona ao login ao abrir o perfil", async ({ page }) => {
   await page.goto("/perfil");
-  await expect(page.getByRole("heading", { name: "Entre para ver seu perfil" })).toBeVisible();
+  await expect(page).toHaveURL(/\/entrar\?redirect=%2Fperfil/);
+  await expect(page.locator("h1", { hasText: "Entre para continuar" })).toBeVisible();
   await page.getByRole("button", { name: "Entrar", exact: true }).last().click();
   await expect(page.getByRole("dialog")).toBeVisible();
 });

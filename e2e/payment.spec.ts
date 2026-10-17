@@ -178,9 +178,10 @@ test("o recibo corresponde à baseline visual", async ({ page }) => {
   });
 });
 
-test("sem sessão o pagamento pede login", async ({ page }) => {
+test("sem sessão o pagamento redireciona ao login", async ({ page }) => {
   await seedCartFor(page, seeded);
   await page.goto("/pagamento");
-  await expect(page.getByRole("heading", { name: "Entre para finalizar a compra" })).toBeVisible();
+  await expect(page).toHaveURL(/\/entrar\?redirect=%2Fpagamento/);
+  await expect(page.locator("h1", { hasText: "Entre para continuar" })).toBeVisible();
   await expect(page.locator("#pay-displayName")).toHaveCount(0);
 });

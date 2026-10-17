@@ -107,7 +107,19 @@ try {
       console.log(row);
     }
   }
-  writeFileSync(new URL("summary.json", out), JSON.stringify({ metas: targets, runs: RUNS, summary }, null, 2));
+  const versao = await fetch(`http://127.0.0.1:${chrome.port}/json/version`).then((res) => res.json());
+  const ambiente = {
+    node: process.version,
+    so: `${process.platform} ${process.arch}`,
+    chrome: versao.Browser,
+    lighthouse: summary[0]?.lighthouse,
+    condicoes:
+      "throttling simulado padrão: mobile 4x CPU e 4G lento (1,6 Mbps, 150 ms RTT); desktop sem CPU slowdown, 10 Mbps e 40 ms RTT",
+  };
+  writeFileSync(
+    new URL("summary.json", out),
+    JSON.stringify({ metas: targets, runs: RUNS, ambiente, summary }, null, 2),
+  );
   const below = summary.flatMap((row) => Object.entries(targets).filter(([id, min]) => row[id] < min));
   if (below.length) console.warn(`${below.length} categoria(s) abaixo da meta. Ver lighthouse/reports/summary.json.`);
 } finally {

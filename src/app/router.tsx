@@ -1,10 +1,38 @@
-import { createRootRoute, createRoute, createRouter, lazyRouteComponent, Outlet } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  lazyRouteComponent,
+  Outlet,
+  redirect,
+} from "@tanstack/react-router";
+import { readSession } from "@/core/auth/session";
+import AuthGatePage from "@/features/auth/pages/gate/AuthGatePage";
 import HomePage from "@/features/marketplace/pages/home/HomePage";
 import { MaintenancePage } from "@/features/marketplace/pages/profile/MaintenancePage";
 import type { AccountSection } from "@/features/marketplace/pages/profile/components/AccountSidebar";
 import { defaultFilters, homeTabs, sortOptions, type HomeSearch } from "@/features/marketplace/types/search";
 
 const rootRoute = createRootRoute({ component: Outlet });
+
+// Fluxos privados exigem sessão: sem ela, o acesso (inclusive direto ou por refresh) vai ao login e retorna à origem.
+const requireSession = ({ location }: { location: { href: string } }) => {
+  if (!readSession()) throw redirect({ to: "/entrar", search: { redirect: location.href }, replace: true });
+};
+
+const authGateRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/entrar",
+  validateSearch: (search: Record<string, unknown>): { redirect: string } => {
+    const target = typeof search.redirect === "string" ? search.redirect : "";
+    // Só caminhos internos: evita redirecionamento aberto.
+    const safe = target.startsWith("/") && !target.startsWith("//") && !target.startsWith("/entrar");
+    return { redirect: safe ? target : "/" };
+  },
+  component: function AuthGate() {
+    return <AuthGatePage redirect={authGateRoute.useSearch().redirect} />;
+  },
+});
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
@@ -44,6 +72,7 @@ const cartRoute = createRoute({
 const paymentRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/pagamento",
+  beforeLoad: requireSession,
   validateSearch: (search: Record<string, unknown>): { coupon?: string } => ({
     coupon: typeof search.coupon === "string" && search.coupon ? search.coupon : undefined,
   }),
@@ -53,12 +82,14 @@ const paymentRoute = createRoute({
 const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/perfil",
+  beforeLoad: requireSession,
   component: lazyRouteComponent(() => import("@/features/marketplace/pages/profile/ProfilePage")),
 });
 
 const walletsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/perfil/carteiras",
+  beforeLoad: requireSession,
   component: lazyRouteComponent(() => import("@/features/marketplace/pages/wallets/WalletsPage")),
 });
 
@@ -71,12 +102,18 @@ const maintenanceRoutes = (
     ["/perfil/suporte", "support"],
   ] as const satisfies readonly (readonly [string, AccountSection])[]
 ).map(([path, section]) =>
-  createRoute({ getParentRoute: () => rootRoute, path, component: () => <MaintenancePage section={section} /> }),
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path,
+    beforeLoad: requireSession,
+    component: () => <MaintenancePage section={section} />,
+  }),
 );
 
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     homeRoute,
+    authGateRoute,
     nftDetailRoute,
     cartRoute,
     paymentRoute,

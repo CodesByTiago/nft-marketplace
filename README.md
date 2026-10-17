@@ -62,6 +62,8 @@ Controles de cenário (rede, não UI), usados pelos E2E em `e2e/realtime.spec.ts
 
 Auditoria do build otimizado (`vite build` servido com gzip, como a hospedagem de produção; mocks ligados) com Lighthouse 13.5.0, Chrome headless, 3 medições por página e perfil (mediana). Config e script em `lighthouse/run.mjs`; relatórios HTML/JSON em `lighthouse/reports/`. Metas: Performance ≥ 90, Acessibilidade ≥ 95, Boas práticas ≥ 95, SEO ≥ 90.
 
+**Ambiente e condições:** Node v24.21.0, Lighthouse 13.5.0, Chrome headless (versão registrada em `lighthouse/reports/summary.json`, campo `ambiente`, junto com SO), Windows x64, execução local. Throttling simulado padrão do Lighthouse: mobile com 4x de CPU e 4G lento (1,6 Mbps, 150 ms RTT); desktop sem CPU slowdown, 10 Mbps e 40 ms RTT. Os resultados variam entre máquinas.
+
 | Página | Perfil | Perf | A11y | BP | SEO | LCP | CLS | TBT |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Início | Mobile | 71 | 100 | 100 | 100 | 5,4 s | 0 | 99 ms |
