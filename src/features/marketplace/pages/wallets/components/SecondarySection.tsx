@@ -3,6 +3,16 @@ import type { WalletNetwork } from "@/features/marketplace/types/payment";
 import { shortHash } from "@/features/marketplace/utils/payment";
 import { validateSecondary, type PrimaryWallet, type SecondaryErrors, type SecondaryWallet } from "../wallet";
 import { Select, WalletField } from "./PrimaryFields";
+import { walletHead, walletNote } from "./walletStyles";
+import { cn } from "@/shared/utils/cn";
+import {
+  accountGrid,
+  accountHeading,
+  accountInput,
+  accountLink,
+  accountPrimary,
+  accountText,
+} from "../../profile/components/accountStyles";
 
 type SecondarySectionProps = {
   primary: PrimaryWallet;
@@ -40,30 +50,34 @@ export function SecondarySection({ primary, secondary, onChange }: SecondarySect
   };
 
   return (
-    <section className="wallet-secondary" aria-labelledby="wallet-secondary-title">
-      <div className="wallet-head">
-        <h2 id="wallet-secondary-title">Carteira secundária</h2>
-        <div className="wallet-secondary-actions">
-          <label className="account-radio">
+    <section className="flex flex-col gap-3" aria-labelledby="wallet-secondary-title">
+      <div className={walletHead}>
+        <h2 id="wallet-secondary-title" className={accountHeading}>
+          Carteira secundária
+        </h2>
+        <div className="flex items-center gap-3">
+          <label className="flex cursor-pointer items-center gap-2 text-[14px]">
             <input
               type="checkbox"
+              className="m-0 size-3 cursor-pointer appearance-none rounded-full border border-primary checked:bg-[radial-gradient(var(--primary-kurio)_45%,transparent_50%)]"
               checked={Boolean(secondary && secondary.address === primary.address)}
               onChange={(event) => (event.target.checked ? copyPrimary() : onChange(null))}
             />
             Igual à carteira principal
           </label>
-          <button type="button" className="account-link" onClick={() => setDraft(secondary ?? blank)}>
+          <button type="button" className={accountLink} onClick={() => setDraft(secondary ?? blank)}>
             {secondary ? "Editar" : "Adicionar"}
           </button>
         </div>
       </div>
       {draft ? (
-        <div className="wallet-draft">
-          <div className="account-grid">
+        <div className="flex flex-col gap-4">
+          <div className={accountGrid}>
             <WalletField id="wallet2-nickname" label="Apelido da carteira" error={errors.nickname}>
               {(aria) => (
                 <input
                   {...aria}
+                  className={accountInput}
                   autoComplete="off"
                   value={draft.nickname}
                   onChange={(event) => patch({ nickname: event.target.value })}
@@ -86,6 +100,7 @@ export function SecondarySection({ primary, secondary, onChange }: SecondarySect
               {(aria) => (
                 <input
                   {...aria}
+                  className={accountInput}
                   autoComplete="off"
                   placeholder="Endereço 0x da carteira"
                   value={draft.address}
@@ -94,21 +109,21 @@ export function SecondarySection({ primary, secondary, onChange }: SecondarySect
               )}
             </WalletField>
           </div>
-          <div className="wallet-draft-actions">
-            <button type="button" className="account-primary" onClick={save}>
+          <div className="flex items-center gap-5">
+            <button type="button" className={cn(accountPrimary, "px-5")} onClick={save}>
               Salvar carteira secundária
             </button>
-            <button type="button" className="account-text" onClick={() => setDraft(null)}>
+            <button type="button" className={accountText} onClick={() => setDraft(null)}>
               Cancelar
             </button>
           </div>
         </div>
       ) : secondary ? (
-        <p className="wallet-note" data-testid="secondary-summary">
+        <p className={walletNote} data-testid="secondary-summary">
           {secondary.nickname} · {secondary.network} · {shortHash(secondary.address)}
         </p>
       ) : (
-        <p className="wallet-note">Você ainda não adicionou uma carteira secundária.</p>
+        <p className={walletNote}>Você ainda não adicionou uma carteira secundária.</p>
       )}
     </section>
   );

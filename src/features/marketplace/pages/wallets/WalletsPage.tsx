@@ -2,9 +2,20 @@ import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { SessionUser } from "@/core/auth/AuthContext";
 import { getWallets, saveWallets, ValidationError } from "@/features/marketplace/services/accountService";
+import { cn } from "@/shared/utils/cn";
 import { AccountShell } from "../profile/components/AccountShell";
+import {
+  accountError,
+  accountForm,
+  accountHeading,
+  accountLink,
+  accountPrimary,
+  accountSave,
+  accountSaved,
+} from "../profile/components/accountStyles";
 import { PrimaryFields } from "./components/PrimaryFields";
 import { SecondarySection } from "./components/SecondarySection";
+import { walletHead, walletNote } from "./components/walletStyles";
 import {
   emptyPrimary,
   validatePrimary,
@@ -71,29 +82,27 @@ function WalletsContent({ user, initial }: { user: SessionUser; initial: Wallets
   }
 
   return (
-    <div className="account-form wallets">
-      <form className="account-form" noValidate onSubmit={(event) => void submit(event)}>
-        <header className="wallet-head">
-          <h2>Carteira principal</h2>
-          <button type="button" className="account-link" onClick={addNew}>
+    <div className={cn(accountForm, "gap-10")}>
+      <form className={cn(accountForm, "gap-5")} noValidate onSubmit={(event) => void submit(event)}>
+        <header className={walletHead}>
+          <h2 className={accountHeading}>Carteira principal</h2>
+          <button type="button" className={accountLink} onClick={addNew}>
             Adicionar
           </button>
         </header>
-        <p className="wallet-note wallet-intro">
-          Estas carteiras ficam disponíveis no pagamento e para receber NFTs comprados.
-        </p>
+        <p className={walletNote}>Estas carteiras ficam disponíveis no pagamento e para receber NFTs comprados.</p>
         <PrimaryFields wallet={data.primary} errors={errors} onChange={patch} />
         {saved && (
-          <p className="account-saved" role="status">
+          <p className={`account-saved ${accountSaved}`} role="status">
             {saved}
           </p>
         )}
         {failure && (
-          <p role="alert" className="account-error">
+          <p role="alert" className={accountError}>
             {failure}
           </p>
         )}
-        <button type="submit" className="account-primary account-save wallet-save" disabled={save.isPending}>
+        <button type="submit" className={cn(accountPrimary, accountSave)} disabled={save.isPending}>
           {save.isPending ? "Salvando…" : "Salvar carteira"}
         </button>
       </form>
@@ -115,9 +124,9 @@ function WalletsLoader({ user }: { user: SessionUser }) {
   const { data, isError, refetch } = useQuery({ queryKey: ["private", "wallets", user.id], queryFn: getWallets });
   if (isError) {
     return (
-      <p role="alert" className="account-error">
+      <p role="alert" className={accountError}>
         Não foi possível carregar suas carteiras.{" "}
-        <button type="button" className="account-link" onClick={() => void refetch()}>
+        <button type="button" className={accountLink} onClick={() => void refetch()}>
           Tentar novamente
         </button>
       </p>

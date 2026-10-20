@@ -104,7 +104,7 @@ export default function NftDetailPage() {
         onSearchSubmit={() => void navigate({ to: "/", state: { q: search } as never })}
       />
 
-      <main className="detail-main page-width">
+      <main className="page-width pt-6 pb-16 max-[640px]:pt-0 max-[640px]:pb-[200px]">
         {isError ? (
           <div className="catalog-message" role="alert">
             <h1>{notFound ? "NFT não encontrado" : "Não foi possível carregar este NFT"}</h1>
@@ -132,7 +132,7 @@ export default function NftDetailPage() {
                 Mercado
               </Link>
             </nav>
-            <div className="detail-product">
+            <div className="flex justify-between gap-8 max-[900px]:flex-col max-[640px]:gap-0">
               <NftGallery
                 name={nft.name}
                 image={nft.image}

@@ -4,18 +4,8 @@
 @import "@fontsource-variable/roboto-mono";
 
 @import "./styles/theme.css";
-@import "./styles/base.css";
-@import "./styles/header.css";
-@import "./styles/hero.css";
-@import "./styles/catalog.css";
-@import "./styles/sections.css";
-@import "./styles/footer.css";
-@import "./styles/cart.css";
-@import "./styles/detail.css";
-@import "./styles/blog.css";
-@import "./styles/cart-page.css";
-@import "./styles/payment.css";
-@import "./styles/profile.css";
-@import "./styles/auth.css";
-@import "./styles/realtime.css";
-@import "./styles/responsive.css";
+@import "./styles/base.css" layer(base);
+@import "./styles/catalog.css" layer(components);
+@import "./styles/detail.css" layer(components);
+@import "./styles/cart-page.css" layer(components);
+@import "./styles/responsive.css" layer(components);

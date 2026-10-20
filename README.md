@@ -41,7 +41,7 @@ Os testes iniciam o servidor Vite com MSW e validam o destaque, filtros, carrinh
 - `src/shared/ui/` — componentes shadcn/ui
 - `src/shared/utils/` — utilitários compartilhados
 - `src/core/api/` — cliente Axios; `src/core/msw/` e `src/core/utils/setup.ts` — servidor MSW e setup global do Vitest
-- `src/styles/` — CSS dividido por responsabilidade, importado por `src/styles.css`
+- `src/styles/` — tokens do tema (`theme.css`) e só o CSS que utilitários não cobrem (keyframes, resets globais, regras compartilhadas); o estilo dos componentes está em utilitários Tailwind
 
 A direção `app → features → shared → core` é verificada pelo `no-restricted-imports` no ESLint. A busca por texto é enviada no body do POST `/api/nfts` e não aparece na URL; categoria, rede, preço, ordenação e página ficam na URL.
 

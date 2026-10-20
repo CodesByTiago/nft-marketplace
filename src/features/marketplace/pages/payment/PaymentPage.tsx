@@ -1,10 +1,12 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowLeft, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link, useCanGoBack, useNavigate, useRouter, useSearch } from "@tanstack/react-router";
 import { useAuth } from "@/core/auth/AuthContext";
 import { Button } from "@/shared/ui/button";
 import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
+import { cn } from "@/shared/utils/cn";
+import { MobileBackHeader } from "@/features/marketplace/components/MobileBackHeader";
 import { SiteFooter } from "@/features/marketplace/components/SiteFooter";
 import { SiteHeader } from "@/features/marketplace/components/SiteHeader";
 import { useCartPanel } from "@/features/marketplace/hooks/useCartPanel";
@@ -17,6 +19,8 @@ import { ProfileForm } from "./components/ProfileForm";
 import { ReceiptDialog } from "./components/ReceiptDialog";
 import { useCheckout } from "./hooks/useCheckout";
 import { emptyProfile, validateProfile, type Profile, type ProfileErrors } from "./profile";
+
+const alertClass = "rounded-[6px] border border-[#ff8a8a] px-3 py-2.5 text-[13px] text-[#ff8a8a]";
 
 function PaymentContent() {
   const navigate = useNavigate();
@@ -86,27 +90,32 @@ function PaymentContent() {
     submit({ items: lines, coupon, expectedTotal: quote.total, provider, ...target });
   }
 
+  const isEmpty = !cartLoading && cart.length === 0;
   const blocked = !quote || submitting || isFetching || Boolean(quote.unavailable?.length);
   const confirm = (
-    <div className="pay-confirm">
+    <div className="flex flex-col gap-3 max-[640px]:fixed max-[640px]:inset-x-7 max-[640px]:bottom-6 max-[640px]:z-20">
       {quote?.unavailable?.length ? (
-        <p className="pay-alert" role="alert">
+        <p className={alertClass} role="alert">
           Há itens esgotados no carrinho. Remova-os para continuar.
         </p>
       ) : null}
       {error && (
-        <p className="pay-alert" role="alert">
+        <p className={alertClass} role="alert">
           {error}
         </p>
       )}
-      <button type="submit" className="pay-submit" disabled={blocked}>
+      <button
+        type="submit"
+        className="h-[45px] rounded-[8px] bg-primary text-[15px] font-bold text-background disabled:cursor-not-allowed disabled:opacity-60 max-[640px]:h-[60px] max-[640px]:rounded-[40px] max-[640px]:bg-transparent max-[640px]:bg-[linear-gradient(108deg,#d28a4c_4%,rgba(210,138,76,.8)_122%)]"
+        disabled={blocked}
+      >
         {submitting ? "Processando compra…" : "Confirmar compra"}
       </button>
     </div>
   );
 
   return (
-    <div className="min-h-screen overflow-x-clip bg-background text-foreground detail-page cart-page payment-page">
+    <div className="min-h-screen overflow-x-clip bg-background text-foreground detail-page">
       <SiteHeader
         cart={cart}
         search={search}
@@ -115,7 +124,12 @@ function PaymentContent() {
         onSearchSubmit={() => void navigate({ to: "/", state: { q: search } as never })}
       />
 
-      <main className="cart-main page-width">
+      <main
+        className={cn(
+          "page-width pt-6 pb-16 max-[640px]:mx-0! max-[640px]:w-full! max-[640px]:px-7 max-[640px]:pt-8",
+          isEmpty ? "max-[640px]:pb-16" : "max-[640px]:pb-[180px]",
+        )}
+      >
         <nav className="detail-breadcrumb" aria-label="Você está em">
           <Link to="/" hash="inicio">
             Início
@@ -126,18 +140,13 @@ function PaymentContent() {
           </Link>
           {" / Pagamento"}
         </nav>
-        <header className="cart-mobile-header">
-          <Button variant="ghost" size="icon" aria-label="Voltar" onClick={goBack}>
-            <ArrowLeft aria-hidden="true" />
-          </Button>
-          <h1>Pagamento com carteira</h1>
-        </header>
+        <MobileBackHeader title="Pagamento com carteira" onBack={goBack} />
 
         {cartLoading ? (
           <p className="catalog-message" role="status">
             Carregando seu carrinho…
           </p>
-        ) : cart.length === 0 ? (
+        ) : isEmpty ? (
           <div className="catalog-message cart-empty">
             <ShoppingBag aria-hidden="true" />
             <h1>Não há itens para pagar</h1>
@@ -147,7 +156,12 @@ function PaymentContent() {
             </Button>
           </div>
         ) : (
-          <form id="pay-form" className="pay-layout" noValidate onSubmit={handleSubmit}>
+          <form
+            id="pay-form"
+            className="flex items-start gap-8 max-[900px]:flex-col max-[900px]:items-stretch"
+            noValidate
+            onSubmit={handleSubmit}
+          >
             {isMobile ? (
               <MobileWallet
                 accountId={accountId}

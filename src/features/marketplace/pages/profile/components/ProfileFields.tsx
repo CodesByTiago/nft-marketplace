@@ -1,6 +1,20 @@
 import { useRef, useState, type ChangeEvent, type ComponentProps, type ReactNode } from "react";
 import { ChevronDown, Eye, EyeOff, ImageIcon } from "lucide-react";
 import type { AccountProfile, PasswordChange, ProfileErrors } from "../accountProfile";
+import { cn } from "@/shared/utils/cn";
+import {
+  accountChevron,
+  accountError,
+  accountField,
+  accountGrid,
+  accountHeading,
+  accountInput,
+  accountLabel,
+  accountPrimary,
+  accountSelect,
+  accountSelectBox,
+  accountText,
+} from "./accountStyles";
 
 const MAX_AVATAR_BYTES = 1024 * 1024;
 
@@ -9,18 +23,19 @@ type FieldProps = {
   label: string;
   required?: boolean;
   error?: string;
+  className?: string;
   children: (aria: { id: string; "aria-invalid": boolean; "aria-describedby": string }) => ReactNode;
 };
 
-function Field({ id, label, required, error, children }: FieldProps) {
+function Field({ id, label, required, error, className, children }: FieldProps) {
   return (
-    <div className="account-field">
-      <label htmlFor={id}>
+    <div className={cn(accountField, className)}>
+      <label htmlFor={id} className={accountLabel}>
         {label}
         {required && <span aria-hidden="true">*</span>}
       </label>
       {children({ id, "aria-invalid": Boolean(error), "aria-describedby": `${id}-error` })}
-      <p id={`${id}-error`} className="account-error" role={error ? "alert" : undefined}>
+      <p id={`${id}-error`} className={accountError} role={error ? "alert" : undefined}>
         {error}
       </p>
     </div>
@@ -30,10 +45,11 @@ function Field({ id, label, required, error, children }: FieldProps) {
 function PasswordInput(props: Omit<ComponentProps<"input">, "type">) {
   const [visible, setVisible] = useState(false);
   return (
-    <div className="account-password">
-      <input {...props} type={visible ? "text" : "password"} />
+    <div className="relative">
+      <input {...props} type={visible ? "text" : "password"} className={cn(accountInput, "pr-11")} />
       <button
         type="button"
+        className="absolute top-0 right-2 grid h-10 w-8 cursor-pointer place-items-center text-primary-light max-[640px]:h-[50px] [&>svg]:size-[18px]"
         aria-label={visible ? "Ocultar senha" : "Mostrar senha"}
         aria-pressed={visible}
         onClick={() => setVisible((current) => !current)}
@@ -61,6 +77,7 @@ export function ProfileFields({ profile, password, errors, onProfile, onPassword
       {(aria) => (
         <input
           {...aria}
+          className={accountInput}
           type={type}
           autoComplete="off"
           value={profile[name]}
@@ -71,7 +88,7 @@ export function ProfileFields({ profile, password, errors, onProfile, onPassword
   );
 
   const secret = (name: keyof PasswordChange, label: string) => (
-    <Field id={`account-${name}`} label={label} error={errors[name]}>
+    <Field id={`account-${name}`} label={label} error={errors[name]} className="gap-3">
       {(aria) => (
         <PasswordInput
           {...aria}
@@ -99,21 +116,22 @@ export function ProfileFields({ profile, password, errors, onProfile, onPassword
 
   return (
     <>
-      <div className="account-grid">
+      <div className={accountGrid}>
         {text("displayName", "Nome de exibição")}
         {text("username", "Nome de usuário")}
         {text("email", "E-mail", "email")}
         <Field id="account-ensName" label="Nome ENS" required error={errors.ensName}>
           {(aria) => (
-            <div className="account-ens">
-              <div className="account-select">
-                <select aria-label="Domínio ENS" defaultValue=".eth">
+            <div className="flex gap-2.5">
+              <div className={accountSelectBox}>
+                <select aria-label="Domínio ENS" defaultValue=".eth" className={accountSelect}>
                   <option value=".eth">.eth</option>
                 </select>
-                <ChevronDown aria-hidden="true" />
+                <ChevronDown aria-hidden="true" className={accountChevron} />
               </div>
               <input
                 {...aria}
+                className={accountInput}
                 autoComplete="off"
                 value={profile.ensName}
                 onChange={(event) => onProfile({ ensName: event.target.value })}
@@ -122,10 +140,10 @@ export function ProfileFields({ profile, password, errors, onProfile, onPassword
           )}
         </Field>
         {text("walletNickname", "Apelido da carteira")}
-        <div className="account-field">
-          <span className="account-label">Avatar</span>
-          <div className="account-avatar">
-            <span className="account-avatar-preview">
+        <div className={accountField}>
+          <span className={accountLabel}>Avatar</span>
+          <div className="flex items-center gap-6">
+            <span className="grid size-[50px] flex-none place-items-center overflow-hidden rounded-full border border-border bg-surface-raised [&>img]:size-full [&>img]:object-cover [&>svg]:size-6 [&>svg]:text-primary-light">
               {profile.avatar ? <img src={profile.avatar} alt="Seu avatar" /> : <ImageIcon aria-hidden="true" />}
             </span>
             <input
@@ -136,20 +154,25 @@ export function ProfileFields({ profile, password, errors, onProfile, onPassword
               aria-label="Arquivo do avatar"
               onChange={pickAvatar}
             />
-            <button type="button" className="account-primary" onClick={() => fileInput.current?.click()}>
+            <button type="button" className={accountPrimary} onClick={() => fileInput.current?.click()}>
               Alterar
             </button>
-            <button type="button" className="account-text" onClick={() => onProfile({ avatar: "" })}>
+            <button type="button" className={accountText} onClick={() => onProfile({ avatar: "" })}>
               Remover
             </button>
           </div>
-          <p className="account-error" role={avatarError ? "alert" : undefined}>
+          <p className={accountError} role={avatarError ? "alert" : undefined}>
             {avatarError}
           </p>
         </div>
       </div>
-      <section className="account-password-section" aria-labelledby="account-password-title">
-        <h2 id="account-password-title">Alterar senha</h2>
+      <section
+        className="flex max-w-[417px] flex-col gap-6 max-[640px]:max-w-none"
+        aria-labelledby="account-password-title"
+      >
+        <h2 id="account-password-title" className={cn(accountHeading, "font-medium")}>
+          Alterar senha
+        </h2>
         {secret("current", "Senha atual")}
         {secret("next", "Nova senha")}
         {secret("confirm", "Confirmar nova senha")}

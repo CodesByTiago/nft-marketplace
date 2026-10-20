@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 
 const VISIBLE_PAGES = 5;
+const pageButton = "size-[35px] rounded-none text-base leading-normal font-normal";
 
 type PaginationProps = {
   page: number;
@@ -15,8 +16,9 @@ export function Pagination({ page, pageCount, onPage }: PaginationProps) {
   const numbers = Array.from({ length: last - first + 1 }, (_, index) => first + index);
 
   return (
-    <nav className="pagination" aria-label="Paginação do catálogo">
+    <nav className="pagination mt-[88px] flex justify-end gap-2 max-[640px]:mt-14" aria-label="Paginação do catálogo">
       <Button
+        className={pageButton}
         variant="outline"
         size="icon"
         aria-label="Página anterior"
@@ -28,6 +30,7 @@ export function Pagination({ page, pageCount, onPage }: PaginationProps) {
       {numbers.map((number) => (
         <Button
           key={number}
+          className={pageButton}
           variant={page === number ? "default" : "ghost"}
           aria-current={page === number ? "page" : undefined}
           onClick={() => onPage(number)}
@@ -36,6 +39,7 @@ export function Pagination({ page, pageCount, onPage }: PaginationProps) {
         </Button>
       ))}
       <Button
+        className={pageButton}
         variant="outline"
         size="icon"
         aria-label="Próxima página"

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import type { CartEntry, CartQuote } from "@/features/marketplace/types/nft";
 import type { WalletProvider } from "@/features/marketplace/types/payment";
+import { QuoteSkeleton } from "@/features/marketplace/components/QuoteSkeleton";
 import { formatEth, toWei } from "@/features/marketplace/utils/eth";
 import { tokenId } from "@/features/marketplace/utils/tokenId";
 import { WalletOptions } from "./WalletOptions";
@@ -14,58 +15,64 @@ type OrderSummaryProps = {
   confirm: ReactNode;
 };
 
+const row = "flex items-start justify-between text-[15px]";
+const amount = "flex flex-col items-end text-[18px]";
+
 export function OrderSummary({ items, quote, provider, onProvider, confirm }: OrderSummaryProps) {
   return (
-    <aside className="pay-summary" aria-label="Resumo do pedido" aria-busy={!quote}>
-      <h2>Seus NFTs</h2>
-      <div className="pay-list-head" aria-hidden="true">
+    <aside
+      className="flex w-[405px] flex-none flex-col gap-4 max-[900px]:w-full"
+      aria-label="Resumo do pedido"
+      aria-busy={!quote}
+    >
+      <h2 className="text-[17px] font-bold">Seus NFTs</h2>
+      <div className="flex justify-between border-b-[.3px] border-primary pb-2.5 text-[16px]" aria-hidden="true">
         <span>NFTs</span>
         <span>Subtotal</span>
       </div>
-      <ul className="pay-items">
+      <ul className="flex flex-col gap-3">
         {items.map(({ nft, quantity }) => (
-          <li key={nft.id}>
-            <img src={nft.image} alt="" />
-            <div>
-              <strong>{nft.name}</strong>
-              <span className="pay-token">ID do token: {tokenId(nft.name)}</span>
-              <span className="pay-qty">(x {quantity})</span>
+          <li className="flex h-[70px] items-center gap-3 rounded-[6px] bg-surface pr-4" key={nft.id}>
+            <img className="size-[70px] flex-none rounded-[8px_0_0_8px] object-cover" src={nft.image} alt="" />
+            <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
+              <strong className="overflow-hidden text-[16px] text-ellipsis whitespace-nowrap">{nft.name}</strong>
+              <span className="text-[14px] text-[#b39463]">ID do token: {tokenId(nft.name)}</span>
+              <span className="text-[14px] text-muted-foreground">(x {quantity})</span>
             </div>
-            <b>{formatEth(toWei(nft.price) * BigInt(quantity))} ETH</b>
+            <b className="text-[18px] text-primary-light">{formatEth(toWei(nft.price) * BigInt(quantity))} ETH</b>
           </li>
         ))}
       </ul>
-      <p className="pay-promo">
-        Tem um código promocional? <Link to="/carrinho">Aplique aqui</Link>
+      <p className="text-center text-[14px]">
+        Tem um código promocional?{" "}
+        <Link className="text-primary-light underline" to="/carrinho">
+          Aplique aqui
+        </Link>
       </p>
       {quote ? (
-        <dl className="pay-totals">
-          <div>
+        <dl className="pay-totals flex flex-col gap-3">
+          <div className={row}>
             <dt>Subtotal</dt>
-            <dd>{formatEth(toWei(quote.subtotal))} ETH</dd>
+            <dd className={amount}>{formatEth(toWei(quote.subtotal))} ETH</dd>
           </div>
-          <div>
+          <div className={row}>
             <dt>{quote.coupon?.status === "applied" ? `Cupom ${quote.coupon.code}` : "Desconto do lançamento"}</dt>
-            <dd className="pay-discount">(-) {formatEth(toWei(quote.discount))}</dd>
+            <dd className="flex flex-col items-end text-[15px]">(-) {formatEth(toWei(quote.discount))}</dd>
           </div>
-          <div>
+          <div className={row}>
             <dt>Taxa de rede</dt>
-            <dd>
+            <dd className={amount}>
               {quote.networkFee} ETH
-              <small>Taxa estimada</small>
+              <small className="text-[12px] text-primary-light">Taxa estimada</small>
             </dd>
           </div>
-          <div className="pay-total">
+          <div className={`pay-total ${row} border-t-[.3px] border-primary pt-3 text-[16px] font-bold`}>
             <dt>Total</dt>
-            <dd>{formatEth(toWei(quote.total), 3)} ETH</dd>
+            <dd className={`${amount} text-primary-light`}>{formatEth(toWei(quote.total), 3)} ETH</dd>
           </div>
         </dl>
       ) : (
-        <div className="cart-quote-skeleton" role="status" aria-label="Calculando resumo">
-          <span />
-          <span />
-          <span />
-        </div>
+        <QuoteSkeleton rows={3} />
       )}
       <WalletOptions provider={provider} onChange={onProvider} />
       {confirm}

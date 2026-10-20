@@ -1,14 +1,13 @@
-* { box-sizing: border-box; }
+/* Resets de elementos ficam no preflight do Tailwind; aqui só regras globais sem equivalente em utilitários. */
 html { min-width: 320px; scroll-behavior: smooth; scroll-padding-top: 88px; }
 body { min-width: 320px; margin: 0; }
-button, input, select { font: inherit; }
 button, a, select { -webkit-tap-highlight-color: transparent; }
 button:not(:disabled), a[href], select:not(:disabled), [role="button"], [role="combobox"], input[type="range"]:not(:disabled) { cursor: pointer; }
 button:disabled { cursor: not-allowed; }
-a { color: inherit; text-decoration: none; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
   outline: 2px solid var(--primary-light);
   outline-offset: 3px;
 }
 ::selection { color: var(--bg); background: var(--primary-light); }
+/* Usado por várias features fora desta migração. */
 .page-width { width: min(1200px, calc(100% - 48px)); margin-inline: auto; }

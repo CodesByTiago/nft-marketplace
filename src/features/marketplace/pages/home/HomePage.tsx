@@ -9,6 +9,16 @@ import { defaultFilters, type HomeFilters } from "@/features/marketplace/types/s
 import { useCartPanel } from "@/features/marketplace/hooks/useCartPanel";
 import { useFavorites } from "@/features/marketplace/hooks/useFavorites";
 import { CartToast } from "@/features/marketplace/components/CartToast";
+import {
+  tabBarClass,
+  tabCartClass,
+  tabHeartClass,
+  tabIconClass,
+  tabLinkClass,
+  tabProfileClass,
+  tabScanClass,
+  tabScanIconClass,
+} from "@/features/marketplace/components/MobileTabBar";
 import { SiteFooter } from "@/features/marketplace/components/SiteFooter";
 import { SiteHeader } from "@/features/marketplace/components/SiteHeader";
 import { BlogSection } from "./components/BlogSection";
@@ -222,42 +232,45 @@ export default function HomePage() {
       </main>
 
       <SiteFooter />
-      <nav className="mobile-tab-bar" aria-label="Navegação inferior">
-        <a href="#inicio" aria-label="Início">
-          <Home aria-hidden="true" />
+      <nav className={tabBarClass} aria-label="Navegação inferior">
+        <a className={tabLinkClass} href="#inicio" aria-label="Início">
+          <Home className={tabIconClass} aria-hidden="true" />
         </a>
         <Button
+          className={tabHeartClass}
           variant="ghost"
           size="icon-lg"
           aria-label={favoritesOnly ? "Mostrar todos os NFTs" : "Mostrar favoritos"}
           aria-pressed={favoritesOnly}
           onClick={() => setFavoritesOnly((only) => !only)}
         >
-          <Heart aria-hidden="true" fill={favoritesOnly ? "currentColor" : "none"} />
+          <Heart className={tabIconClass} aria-hidden="true" fill={favoritesOnly ? "currentColor" : "none"} />
         </Button>
         <Button
-          className="mobile-scan"
+          className={tabScanClass}
           size="icon-lg"
           aria-label="Ir para o catálogo"
           onClick={() => document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" })}
         >
-          <ScanLine aria-hidden="true" />
+          <ScanLine className={tabScanIconClass} aria-hidden="true" />
         </Button>
         <Button
+          className={tabCartClass}
           variant="ghost"
           size="icon-lg"
           aria-label={`Abrir carrinho, ${cartCount} itens`}
           onClick={() => void navigate({ to: "/carrinho" })}
         >
-          <ShoppingBag aria-hidden="true" />
+          <ShoppingBag className={tabIconClass} aria-hidden="true" />
         </Button>
         <Button
+          className={tabProfileClass}
           variant="ghost"
           size="icon-lg"
           aria-label={user ? `Meu perfil (${user.username})` : "Perfil"}
           onClick={() => (user ? void navigate({ to: "/perfil" }) : openAuth("login"))}
         >
-          <UserRound aria-hidden="true" />
+          <UserRound className={tabIconClass} aria-hidden="true" />
         </Button>
       </nav>
       {toast && <CartToast nft={toast} onView={() => void navigate({ to: "/carrinho" })} onClose={dismissToast} />}

@@ -2,7 +2,15 @@ import { useState, type FormEvent } from "react";
 import type { Session } from "@/core/auth/session";
 import { login } from "../services/authService";
 import { validateLogin, type FieldErrors, type LoginInput } from "../types";
-import { PasswordField, TextField } from "./Fields";
+import {
+  authFailureClass,
+  authFieldsClass,
+  authFormClass,
+  authLinkClass,
+  authSubmitClass,
+  PasswordField,
+  TextField,
+} from "./Fields";
 import { SocialButtons } from "./SocialButtons";
 
 export function LoginForm({ onSuccess }: { onSuccess: (session: Session) => void }) {
@@ -33,8 +41,8 @@ export function LoginForm({ onSuccess }: { onSuccess: (session: Session) => void
   });
 
   return (
-    <form className="auth-form" onSubmit={submit} noValidate>
-      <div className="auth-fields">
+    <form className={authFormClass} onSubmit={submit} noValidate>
+      <div className={authFieldsClass}>
         <TextField
           id="auth-login-email"
           label="E-mail"
@@ -52,18 +60,18 @@ export function LoginForm({ onSuccess }: { onSuccess: (session: Session) => void
         />
         <button
           type="button"
-          className="auth-link auth-forgot"
+          className={`${authLinkClass} self-end`}
           onClick={() => setFailure("A recuperação de senha estará disponível em breve.")}
         >
           Esqueceu a senha?
         </button>
       </div>
       {failure && (
-        <p role="alert" className="auth-error auth-failure">
+        <p role="alert" className={authFailureClass}>
           {failure}
         </p>
       )}
-      <button type="submit" className="auth-submit" disabled={pending}>
+      <button type="submit" className={`auth-submit ${authSubmitClass}`} disabled={pending}>
         {pending ? "Entrando..." : "Entrar"}
       </button>
       <SocialButtons />

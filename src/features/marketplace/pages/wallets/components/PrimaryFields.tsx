@@ -3,6 +3,17 @@ import { ChevronDown } from "lucide-react";
 import type { WalletNetwork } from "@/features/marketplace/types/payment";
 import { providerLabels } from "@/features/marketplace/utils/payment";
 import type { PrimaryWallet, WalletErrors } from "../wallet";
+import {
+  accountChevron,
+  accountError,
+  accountField,
+  accountGrid,
+  accountInput,
+  accountLabel,
+  accountSelect,
+  accountSelectBox,
+  accountSelectBoxWide,
+} from "../../profile/components/accountStyles";
 
 type Aria = { id: string; "aria-invalid": boolean; "aria-describedby": string };
 
@@ -18,17 +29,17 @@ export function WalletField({
   children: (aria: Aria) => ReactNode;
 }) {
   return (
-    <div className="account-field">
+    <div className={accountField}>
       {label ? (
-        <label htmlFor={id}>
+        <label htmlFor={id} className={accountLabel}>
           {label}
           <span aria-hidden="true">*</span>
         </label>
       ) : (
-        <span className="account-field-spacer" aria-hidden="true" />
+        <span className="h-[29px]" aria-hidden="true" />
       )}
       {children({ id, "aria-invalid": Boolean(error), "aria-describedby": `${id}-error` })}
-      <p id={`${id}-error`} className="account-error" role={error ? "alert" : undefined}>
+      <p id={`${id}-error`} className={accountError} role={error ? "alert" : undefined}>
         {error}
       </p>
     </div>
@@ -42,16 +53,17 @@ export function Select({
 }: Aria & { value: string; children: ReactNode; onChange: (value: string) => void }) {
   const { onChange, ...rest } = aria;
   return (
-    <div className="account-select wide">
+    <div className={accountSelectBoxWide}>
       <select
         {...rest}
+        className={accountSelect}
         value={value}
         data-empty={value === "" || undefined}
         onChange={(event) => onChange(event.target.value)}
       >
         {children}
       </select>
-      <ChevronDown aria-hidden="true" />
+      <ChevronDown aria-hidden="true" className={accountChevron} />
     </div>
   );
 }
@@ -68,6 +80,7 @@ export function PrimaryFields({ wallet, errors, onChange }: PrimaryFieldsProps) 
       {(aria) => (
         <input
           {...aria}
+          className={accountInput}
           type={type}
           autoComplete="off"
           aria-label={label ? undefined : placeholder}
@@ -80,7 +93,7 @@ export function PrimaryFields({ wallet, errors, onChange }: PrimaryFieldsProps) 
   );
 
   return (
-    <div className="account-grid">
+    <div className={accountGrid}>
       {text("displayName", "Nome de exibição")}
       {text("nickname", "Apelido da carteira")}
       <WalletField id="wallet-network" label="Rede" error={errors.network}>
@@ -119,15 +132,16 @@ export function PrimaryFields({ wallet, errors, onChange }: PrimaryFieldsProps) 
       {text("email", "E-mail", undefined, "email")}
       <WalletField id="wallet-ens" label="Nome ENS" error={errors.ens}>
         {(aria) => (
-          <div className="account-ens">
-            <div className="account-select">
-              <select aria-label="Domínio ENS" defaultValue=".eth">
+          <div className="flex gap-2.5">
+            <div className={accountSelectBox}>
+              <select aria-label="Domínio ENS" defaultValue=".eth" className={accountSelect}>
                 <option value=".eth">.eth</option>
               </select>
-              <ChevronDown aria-hidden="true" />
+              <ChevronDown aria-hidden="true" className={accountChevron} />
             </div>
             <input
               {...aria}
+              className={accountInput}
               autoComplete="off"
               value={wallet.ens}
               onChange={(event) => onChange({ ens: event.target.value })}

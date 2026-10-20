@@ -1,4 +1,6 @@
 @custom-variant dark (&:is(.dark *));
+/* Só há hover real em desktop; em telas de toque o ícone do carrinho vai direto à página. Usado em CartPreview.tsx. */
+@custom-variant hover-desktop (@media (hover: hover) and (min-width: 901px));
 
 :root {
   font-family: "Roboto Mono", monospace;
@@ -44,6 +46,9 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -56,3 +61,8 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 }
+
+/* Keyframes referenciados por utilitários animate-[...] (hero-slide-in também é verificado no e2e). */
+@keyframes hero-slide-in { from { opacity: 0; transform: translateX(32px); } to { opacity: 1; transform: none; } }
+@keyframes cart-pop { 0% { transform: scale(.4); } 60% { transform: scale(1.5); } 100% { transform: scale(1); } }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-8px); } }

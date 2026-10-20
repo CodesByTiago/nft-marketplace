@@ -10,6 +10,16 @@ import {
   type ProfileErrors,
 } from "./accountProfile";
 import { AccountShell } from "./components/AccountShell";
+import {
+  accountError,
+  accountForm,
+  accountHeading,
+  accountLink,
+  accountPrimary,
+  accountSave,
+  accountSaved,
+} from "./components/accountStyles";
+import { cn } from "@/shared/utils/cn";
 import { ProfileFields } from "./components/ProfileFields";
 
 function ProfileForm({ user, initial }: { user: SessionUser; initial: AccountProfile }) {
@@ -59,8 +69,8 @@ function ProfileForm({ user, initial }: { user: SessionUser; initial: AccountPro
   }
 
   return (
-    <form className="account-form" noValidate onSubmit={(event) => void submit(event)}>
-      <h2>Perfil do colecionador</h2>
+    <form className={accountForm} noValidate onSubmit={(event) => void submit(event)}>
+      <h2 className={accountHeading}>Perfil do colecionador</h2>
       <ProfileFields
         profile={profile}
         password={password}
@@ -69,16 +79,16 @@ function ProfileForm({ user, initial }: { user: SessionUser; initial: AccountPro
         onPassword={(change) => patch(setPassword, change)}
       />
       {saved && (
-        <p className="account-saved" role="status">
+        <p className={`account-saved ${accountSaved}`} role="status">
           Alterações salvas.
         </p>
       )}
       {failure && (
-        <p role="alert" className="account-error">
+        <p role="alert" className={accountError}>
           {failure}
         </p>
       )}
-      <button type="submit" className="account-primary account-save" disabled={save.isPending}>
+      <button type="submit" className={cn(accountPrimary, accountSave)} disabled={save.isPending}>
         {save.isPending ? "Salvando…" : "Salvar"}
       </button>
     </form>
@@ -89,9 +99,9 @@ function ProfileLoader({ user }: { user: SessionUser }) {
   const { data, isError, refetch } = useQuery({ queryKey: ["private", "profile", user.id], queryFn: getProfile });
   if (isError) {
     return (
-      <p role="alert" className="account-error">
+      <p role="alert" className={accountError}>
         Não foi possível carregar seu perfil.{" "}
-        <button type="button" className="account-link" onClick={() => void refetch()}>
+        <button type="button" className={accountLink} onClick={() => void refetch()}>
           Tentar novamente
         </button>
       </p>

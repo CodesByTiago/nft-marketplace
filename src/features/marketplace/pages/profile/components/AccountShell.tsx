@@ -43,7 +43,7 @@ export function AccountShell({ section, title, children }: AccountShellProps) {
   }
 
   return (
-    <div className="min-h-screen overflow-x-clip bg-background text-foreground detail-page cart-page account-page">
+    <div className="min-h-screen overflow-x-clip bg-background text-foreground detail-page cart-page">
       <SiteHeader
         cart={cart}
         search={search}
@@ -51,8 +51,11 @@ export function AccountShell({ section, title, children }: AccountShellProps) {
         activeId="inicio"
         onSearchSubmit={() => void navigate({ to: "/", state: { q: search } as never })}
       />
-      <main className="cart-main page-width">
-        <nav className="detail-breadcrumb" aria-label="Você está em">
+      <main className="mx-auto w-[min(1200px,calc(100%-48px))] pt-6 pb-16 max-[640px]:m-0 max-[640px]:w-full max-[640px]:px-7 max-[640px]:pt-8 max-[640px]:pb-12">
+        <nav
+          className="mb-6 text-[15px] font-bold text-muted-foreground max-[640px]:hidden [&>a:hover]:text-primary-light"
+          aria-label="Você está em"
+        >
           <Link to="/" hash="inicio">
             Início
           </Link>
@@ -60,14 +63,14 @@ export function AccountShell({ section, title, children }: AccountShellProps) {
           <Link to="/perfil">Meu perfil</Link>
           {section !== "profile" && ` / ${accountItems.find((item) => item.section === section)?.label}`}
         </nav>
-        <header className="cart-mobile-header">
+        <header className="hidden h-11 items-center gap-6 mb-8 max-[640px]:flex [&>button]:size-[35px] [&>button]:rounded-full [&>button]:border [&>button]:border-border [&>button]:bg-surface-raised">
           <Button variant="ghost" size="icon" aria-label="Voltar" onClick={goBack}>
             <ArrowLeft aria-hidden="true" />
           </Button>
-          <h1>{title}</h1>
+          <h1 className="text-xl font-bold">{title}</h1>
         </header>
         {user ? (
-          <div className="account-layout">
+          <div className="flex items-start gap-7 max-[640px]:flex-col max-[640px]:items-stretch max-[640px]:gap-6">
             <AccountSidebar current={section} onLogout={leave} />
             {children(user)}
           </div>

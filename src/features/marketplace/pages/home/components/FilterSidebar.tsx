@@ -24,6 +24,9 @@ type FilterSidebarProps = {
 
 const MAX_PRICE = 20;
 
+const rangeInput =
+  "pointer-events-none absolute inset-0 h-[15px] w-full appearance-none bg-transparent [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:size-[15px] [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-[url('/images/slider-knob.svg')] [&::-moz-range-thumb]:bg-[length:15px_15px] [&::-moz-range-thumb]:bg-center [&::-moz-range-thumb]:bg-no-repeat [&::-moz-range-track]:h-1 [&::-moz-range-track]:bg-transparent [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:-mt-[5.5px] [&::-webkit-slider-thumb]:size-[15px] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:border-0 [&::-webkit-slider-thumb]:bg-[url('/images/slider-knob.svg')] [&::-webkit-slider-thumb]:bg-[length:15px_15px] [&::-webkit-slider-thumb]:bg-center [&::-webkit-slider-thumb]:bg-no-repeat";
+
 function formatPrice(value: number) {
   return value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
@@ -42,12 +45,12 @@ function FilterList({
   const selectedValues = new Set(selected ? selected.split(",") : []);
 
   return (
-    <section className={`filter-group ${title === "Coleções" ? "filter-collections" : ""}`}>
-      <h2>{title}</h2>
-      <div className="filter-list">
+    <section className="min-w-0">
+      <h2 className="text-[18px] leading-4 font-bold text-foreground">{title}</h2>
+      <div className="mt-3 grid px-3">
         {values.map(({ label, count }) => (
           <button
-            className="filter-option"
+            className="flex min-h-10 w-full items-center justify-between text-left text-[15px] leading-10 text-muted-foreground hover:text-primary-light disabled:opacity-40 disabled:hover:text-muted-foreground aria-pressed:text-primary-light"
             key={label}
             type="button"
             aria-pressed={selectedValues.has(label)}
@@ -55,7 +58,7 @@ function FilterList({
             onClick={() => onToggle(label)}
           >
             <span>{label}</span>
-            <strong>({count})</strong>
+            <strong className="font-bold">({count})</strong>
           </button>
         ))}
       </div>
@@ -91,16 +94,24 @@ export function FilterSidebar({
   }
 
   return (
-    <aside className="filter-sidebar" aria-label="Filtros do catálogo">
-      <div className="mobile-filter-head">
-        <h2>Filtros</h2>
+    <aside
+      className="flex min-w-0 flex-col gap-6 max-[640px]:hidden max-[640px]:[.filters-open_&]:fixed max-[640px]:[.filters-open_&]:inset-y-0 max-[640px]:[.filters-open_&]:right-0 max-[640px]:[.filters-open_&]:z-80 max-[640px]:[.filters-open_&]:block max-[640px]:[.filters-open_&]:w-[min(340px,88vw)] max-[640px]:[.filters-open_&]:overflow-y-auto max-[640px]:[.filters-open_&]:bg-surface max-[640px]:[.filters-open_&]:p-6"
+      aria-label="Filtros do catálogo"
+    >
+      <div className="mb-5 hidden items-center justify-between max-[640px]:flex">
+        <h2 className="text-[18px]">Filtros</h2>
         <Button variant="ghost" size="icon-sm" aria-label="Fechar filtros" onClick={onClose}>
           <X aria-hidden="true" />
         </Button>
       </div>
-      <div className="filter-panel">
+      <div className="flex flex-col gap-10 bg-surface p-5">
         {hasActiveFilters && (
-          <Button className="clear-filters" type="button" variant="outline" onClick={onClear}>
+          <Button
+            className="h-9 self-start rounded-[6px] border-primary bg-transparent px-3 py-2 text-base leading-normal font-bold text-primary hover:bg-primary hover:text-background"
+            type="button"
+            variant="outline"
+            onClick={onClear}
+          >
             Limpar filtros
           </Button>
         )}
@@ -111,16 +122,17 @@ export function FilterSidebar({
           onToggle={(value) => onCategory(toggleValue(value, category))}
         />
 
-        <section className="filter-group price-filter">
-          <h2>Faixa de preço</h2>
-          <div className="price-range-control">
+        <section className="flex min-w-0 flex-col gap-3">
+          <h2 className="text-[18px] leading-4 font-bold text-foreground">Faixa de preço</h2>
+          <div className="relative mx-3 h-[15px]">
             <div
-              className="price-track"
+              className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full"
               style={{
                 background: `linear-gradient(to right, var(--border-kurio) ${start}%, var(--primary-kurio) ${start}%, var(--primary-kurio) ${end}%, var(--border-kurio) ${end}%)`,
               }}
             />
             <input
+              className={rangeInput}
               aria-label="Preço mínimo em ETH"
               type="range"
               min="0"
@@ -130,6 +142,7 @@ export function FilterSidebar({
               onChange={(event) => setPriceRange((current) => ({ ...current, min: Number(event.target.value) }))}
             />
             <input
+              className={rangeInput}
               aria-label="Preço máximo em ETH"
               type="range"
               min={Math.min(MAX_PRICE, priceRange.min + 0.01)}
@@ -139,10 +152,14 @@ export function FilterSidebar({
               onChange={(event) => setPriceRange((current) => ({ ...current, max: Number(event.target.value) }))}
             />
           </div>
-          <p className="price-summary">
+          <p className="text-[15px] leading-5 text-foreground">
             Preço: {formatPrice(priceRange.min)} - {formatPrice(priceRange.max)} ETH
           </p>
-          <Button className="price-apply" type="button" onClick={() => onApplyPrice(priceRange.min, priceRange.max)}>
+          <Button
+            className="h-9 self-start rounded-[6px] px-3 py-2 text-base leading-[inherit] font-bold hover:bg-primary-light"
+            type="button"
+            onClick={() => onApplyPrice(priceRange.min, priceRange.max)}
+          >
             Aplicar
           </Button>
         </section>
@@ -155,10 +172,17 @@ export function FilterSidebar({
         />
       </div>
 
-      <article className="featured-nft-banner">
-        <h2>NFT EM DESTAQUE</h2>
-        <p>OFERTA LIMITADA</p>
-        <img src="/images/nft-nomad.webp" alt="Sage Nomad, macaco usando chapéu e moletom roxo" loading="lazy" />
+      <article className="relative flex h-[470px] flex-col items-center gap-4 overflow-hidden bg-linear-to-b/srgb from-[rgba(210,138,76,.1)] to-[rgba(210,138,76,.03)] pt-6 pb-1 max-[640px]:hidden">
+        <h2 className="self-stretch px-5 text-center text-2xl leading-8 font-bold text-primary-light">
+          NFT EM DESTAQUE
+        </h2>
+        <p className="text-center text-[22px] leading-4 font-bold text-foreground">OFERTA LIMITADA</p>
+        <img
+          className="h-[368px] w-full shrink-0 rounded-[22px] object-cover"
+          src="/images/nft-nomad.webp"
+          alt="Sage Nomad, macaco usando chapéu e moletom roxo"
+          loading="lazy"
+        />
       </article>
     </aside>
   );

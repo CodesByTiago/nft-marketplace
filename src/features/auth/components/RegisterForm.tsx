@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import type { Session } from "@/core/auth/session";
 import { register } from "../services/authService";
 import { validateRegister, type FieldErrors, type RegisterInput } from "../types";
-import { PasswordField, TextField } from "./Fields";
+import { authFailureClass, authFieldsClass, authFormClass, authSubmitClass, PasswordField, TextField } from "./Fields";
 import { SocialButtons } from "./SocialButtons";
 
 const empty: RegisterInput = { username: "", email: "", password: "", confirmPassword: "" };
@@ -35,8 +35,8 @@ export function RegisterForm({ onSuccess }: { onSuccess: (session: Session) => v
   });
 
   return (
-    <form className="auth-form" onSubmit={submit} noValidate>
-      <div className="auth-fields">
+    <form className={authFormClass} onSubmit={submit} noValidate>
+      <div className={authFieldsClass}>
         <TextField
           id="auth-register-username"
           label="Nome de usuário"
@@ -68,11 +68,11 @@ export function RegisterForm({ onSuccess }: { onSuccess: (session: Session) => v
         />
       </div>
       {failure && (
-        <p role="alert" className="auth-error auth-failure">
+        <p role="alert" className={authFailureClass}>
           {failure}
         </p>
       )}
-      <button type="submit" className="auth-submit" disabled={pending}>
+      <button type="submit" className={`auth-submit ${authSubmitClass}`} disabled={pending}>
         {pending ? "Criando..." : "Criar conta"}
       </button>
       <SocialButtons />
