@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useSearch } from "@tanstack/react-router";
 import { Heart, Home, ScanLine, Search, ShoppingBag, UserRound } from "lucide-react";
 import { Button } from "@/shared/ui/button";
+import { cn } from "@/shared/utils/cn";
 import { useAuth } from "@/core/auth/AuthContext";
 import { getNfts } from "@/features/marketplace/services/nftService";
 import { defaultFilters, type HomeFilters } from "@/features/marketplace/types/search";
@@ -30,6 +31,8 @@ import { Pagination } from "./components/Pagination";
 import { PromoSection } from "./components/PromoSection";
 
 const PAGE_SIZE = 9;
+const nftGrid =
+  "mt-8 grid grid-cols-3 items-start gap-x-[34px] gap-y-22 max-[900px]:grid-cols-2 max-[900px]:gap-x-5 max-[900px]:gap-y-9 max-[640px]:mt-4 max-[640px]:gap-x-4 max-[640px]:gap-y-6";
 const categoryLabels = [
   "Arte digital",
   "Fotografia",
@@ -142,8 +145,14 @@ export default function HomePage() {
       <main>
         <HeroCarousel />
 
-        <section className="catalog-section page-width" id="catalogo">
-          <div className={`catalog-layout ${filtersOpen ? "filters-open" : ""}`}>
+        <section className="catalog-section page-width mt-24 max-[640px]:mt-4" id="catalogo">
+          <div
+            className={cn(
+              "catalog-layout grid grid-cols-[310px_minmax(0,1fr)] items-start gap-12 max-[900px]:grid-cols-[250px_minmax(0,1fr)] max-[900px]:gap-6 max-[640px]:block",
+              filtersOpen &&
+                "filters-open max-[640px]:before:fixed max-[640px]:before:inset-0 max-[640px]:before:z-79 max-[640px]:before:bg-[rgba(10,6,4,.72)] max-[640px]:before:content-['']",
+            )}
+          >
             <FilterSidebar
               categories={categories}
               networks={networks}
@@ -159,7 +168,7 @@ export default function HomePage() {
               onClose={() => setFiltersOpen(false)}
             />
 
-            <div className="catalog-results">
+            <div className="min-w-0">
               <CatalogToolbar
                 tab={tab}
                 sort={sort}
@@ -167,7 +176,7 @@ export default function HomePage() {
                 onSort={(value) => updateSearch({ sort: value, page: 1 })}
               />
               {favoriteFailed && (
-                <p role="alert" className="catalog-notice">
+                <p role="alert" className="mb-3 text-[14px] text-[#ff8a8a]">
                   Não foi possível atualizar seus favoritos. Tente novamente.
                 </p>
               )}
@@ -180,7 +189,7 @@ export default function HomePage() {
                   </Button>
                 </div>
               ) : isPending ? (
-                <div className="nft-grid" aria-label="Carregando catálogo" aria-busy="true">
+                <div className={nftGrid} aria-label="Carregando catálogo" aria-busy="true">
                   {Array.from({ length: PAGE_SIZE }, (_, index) => (
                     <div className="nft-skeleton" key={index} />
                   ))}
@@ -206,7 +215,7 @@ export default function HomePage() {
                   )}
                 </div>
               ) : (
-                <div className="nft-grid">
+                <div className={nftGrid}>
                   {visibleNfts.map((nft, index) => (
                     <NftCard
                       key={nft.id}

@@ -5,7 +5,3 @@
 
 @import "./styles/theme.css";
 @import "./styles/base.css" layer(base);
-@import "./styles/catalog.css" layer(components);
-@import "./styles/detail.css" layer(components);
-@import "./styles/cart-page.css" layer(components);
-@import "./styles/responsive.css" layer(components);

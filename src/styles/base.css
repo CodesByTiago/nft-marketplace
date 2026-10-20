@@ -9,5 +9,31 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   outline-offset: 3px;
 }
 ::selection { color: var(--bg); background: var(--primary-light); }
-/* Usado por várias features fora desta migração. */
+
+/* Compartilhado por várias telas e features. */
 .page-width { width: min(1200px, calc(100% - 48px)); margin-inline: auto; }
+.catalog-message { display: grid; min-height: 280px; place-content: center; justify-items: center; gap: 12px; color: var(--muted); text-align: center; }
+.catalog-message h1 { color: var(--foreground); font-size: 18px; }
+.catalog-message h3 { color: var(--foreground); font-size: 16px; }
+.catalog-message p { font-size: 12px; }
+.catalog-message > svg { color: var(--primary-light); }
+.cart-empty svg { width: 32px; height: 32px; color: var(--primary-kurio); }
+.detail-breadcrumb { margin-bottom: 24px; color: var(--muted); font-size: 15px; font-weight: 700; }
+.detail-breadcrumb a:hover { color: var(--primary-light); }
+.nft-skeleton { min-height: 356px; background: linear-gradient(100deg, var(--surface), #33221a 45%, var(--surface)); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+@keyframes shimmer { to { background-position-x: -200%; } }
+
+@media (max-width: 640px) {
+  body { padding-bottom: 96px; }
+  .page-width { width: calc(100% - 48px); }
+  .detail-page .site-header, .detail-page .site-footer, .detail-breadcrumb { display: none !important; }
+}
+
+@media (max-width: 340px) {
+  html, body { min-width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nft-skeleton { animation: none; }
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
